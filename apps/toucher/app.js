@@ -1,3 +1,6 @@
+var ENV = process.env;
+var MEM = process.memory();
+
 const Storage = require("Storage");
 const filename = 'toucher.json';
 let settings = Storage.readJSON(filename,1) || {
@@ -27,13 +30,22 @@ const STATE = {
   offset: 0
 };
 
+function getVersion(file) {
+  var j = Storage.readJSON(file,1);
+  var v = ("object"==typeof j)?j.version:false;
+  g.drawString(v?(" "+(v?"v"+v:"Unknown")):"NO ",0);
+}
+
 function getPosition(index){
   return (index*HALF);
 }
 
 function getApps(){
   const exit_app = {
-    name: 'Exit',
+    name: "     Beenden\n\nVersion    " + ENV.VERSION
+      + "\nBootloader " + getVersion("boot.info")
+      + "\nLauncher   " +  getVersion("launch.info")
+      + "\nSettings   " +  getVersion("setting.info"),
     special: true
   };
   const raw_apps = Storage.list(/\.info$/).filter(app => app.endsWith('.info')).map(app => Storage.readJSON(app,1) || { name: "DEAD: "+app.substr(1) })
