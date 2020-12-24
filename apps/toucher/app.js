@@ -33,7 +33,8 @@ const STATE = {
 function getVersion(file) {
   var j = Storage.readJSON(file,1);
   var v = ("object"==typeof j)?j.version:false;
-  g.drawString(v?(" "+(v?"v"+v:"Unknown")):"NO ",0);
+  //g.drawString(v?(" "+(v?"v"+v:"Unknown")):"NO ",0);
+  return v;
 }
 
 function getPosition(index){
@@ -42,10 +43,12 @@ function getPosition(index){
 
 function getApps(){
   const exit_app = {
-    name: "     Beenden\n\nVersion    " + ENV.VERSION
-      + "\nBootloader " + getVersion("boot.info")
-      + "\nLauncher   " +  getVersion("launch.info")
-      + "\nSettings   " +  getVersion("setting.info"),
+    name: "        BANGLEJS.COM\n"
+      + " Powered by Espruino\n\n\n"
+      + "      Beenden\n\n\n  Version   :" + ENV.VERSION
+      + "\n  Bootloader:" + getVersion("boot.info")
+      + "\n  Launcher  :" + getVersion("toucher.info")
+      + "\n  Settings  :" + getVersion("setting.info"),
     special: true
   };
   const raw_apps = Storage.list(/\.info$/).filter(app => app.endsWith('.info')).map(app => Storage.readJSON(app,1) || { name: "DEAD: "+app.substr(1) })
@@ -111,7 +114,7 @@ function render(){
       g.setFont(font, fontSize);
       g.setColor(scale,scale,scale);
       g.setFontAlign(0,0);
-      g.drawString(app.name, HALF, HALF);
+      g.drawString(app.name, HALF, HALF - 30);
       return;
     }
 

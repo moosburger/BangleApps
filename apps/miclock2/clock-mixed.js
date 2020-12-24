@@ -2,9 +2,9 @@
 
 /* jshint esversion: 6 */
 var locale = require("locale");
-const Radius = { "center": 7, "hour": 60, "min": 80, "dots": 88 };
+const Radius = { "center": 4, "hour": 60, "min": 80, "sec" : 85, "dots": 92 };
 const Center = { "x": 120, "y": 96 };
-const Widths = { hour: 2, minute: 2 };
+const Widths = { hour: 2, minute: 2, second: 1 };
 var buf = Graphics.createArrayBuffer(240,192,1,{msb:true});
 
 function rotatePoint(x, y, d) {
@@ -52,6 +52,8 @@ function drawMixedClock(force) {
     var dateArray = date.toString().split(" ");
     var isEn = locale.name.startsWith("en");
     var point = [];
+    var start = [];
+    var second = date.getSeconds();
     var minute = date.getMinutes();
     var hour = date.getHours();
     var radius;
@@ -62,24 +64,33 @@ function drawMixedClock(force) {
     // draw date
     buf.setFont("6x8", 2);
     buf.setFontAlign(-1, 0);
-    buf.drawString(locale.dow(date,true) + ' ', 4, 16, true);
-    buf.drawString(isEn?(' ' + dateArray[2]):locale.month(date,true), 4, 176, true);
+    buf.drawString(locale.dow(date,true) + ' ', 4, 160, true);
+    buf.drawString(isEn?(dateArray[2]):locale.month(date,true), 4, 176, true);
     buf.setFontAlign(1, 0);
-    buf.drawString(isEn?locale.month(date,true):(' ' + dateArray[2]), 237, 16, true);
+    buf.drawString(isEn?locale.month(date,true):(' ' + dateArray[2]), 237, 160, true);
     buf.drawString(dateArray[3], 237, 176, true);
 
     // draw hour and minute dots
     for (i = 0; i < 60; i++) {
-        radius = (i % 5) ? 2 : 4;
+        radius = (i % 5) ? 1 : 0;
         point = rotatePoint(0, Radius.dots, i * 6);
         buf.fillCircle(point[0], point[1], radius);
+        point = rotatePoint(0, 92, i * 30);
+        start = rotatePoint(0, 82, i * 30);
+        buf.drawLine(start[0], start[1], point[0], point[1]);
+        buf.fillPoly(setLineWidth(start[0], start[1], point[0], point[1], 2));
     }
 
     // draw digital time
-    buf.setFont("6x8", 3);
-    buf.setFontAlign(0, 0);
-    buf.drawString(dateArray[4], 120, 120, true);
+    //buf.setFont("6x8", 2);
+    //buf.setFontAlign(0, 0);
+    //buf.drawString(dateArray[4], 120, 120, true);
 
+    // draw new second hand
+    point = rotatePoint(0, Radius.sec, second * 6);
+    buf.drawLine(Center.x, Center.y, point[0], point[1]);
+    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
+    
     // draw new minute hand
     point = rotatePoint(0, Radius.min, minute * 6);
     buf.drawLine(Center.x, Center.y, point[0], point[1]);
