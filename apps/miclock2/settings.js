@@ -6,7 +6,6 @@
 
   function getSettings(){
     return {
-      digital : true,
       size: 2
     };
   }

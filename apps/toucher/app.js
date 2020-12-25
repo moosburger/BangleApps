@@ -212,7 +212,7 @@ function next(){
 function run(){
 
   const app = APPS[STATE.index];
-  if(app.name == 'Exit') return load();
+  if(app.special) return load();
 
   if (Storage.read(app.src)===undefined) {
     E.showMessage("App Source\nNot found");

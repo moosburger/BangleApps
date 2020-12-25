@@ -2083,7 +2083,7 @@
   { "id": "miclock2",
     "name": "Mixed Clock 2",
     "icon": "clock-mixed.png",
-    "version":"0.03",
+    "version":"0.04",
     "description": "White color variant of the Mixed Clock2 and sizeable digital clock",
     "tags": "clock",
     "type":"clock",
