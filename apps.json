@@ -2093,7 +2093,7 @@
     ],
     "storage": [
       {"name":"miclock2.app.js","url":"clock-mixed.js"},
-      {"name":"miclock2.settings.js","url":"settings.js"}
+      {"name":"miclock2.settings.js","url":"settings.js"},
       {"name":"miclock2.img","url":"clock-mixed-icon.js","evaluate":true}
     ]
   },
