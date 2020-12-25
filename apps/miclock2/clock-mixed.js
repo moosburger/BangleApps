@@ -64,10 +64,14 @@ function drawMixedClock(force) {
     // draw date
     buf.setFont("6x8", 2);
     buf.setFontAlign(-1, 0);
-    buf.drawString(locale.dow(date,true) + ' ', 4, 160, true);
+    //Wochentag
+    buf.drawString(locale.dow(date,true), 4, 160, true);
+    //Tag
     buf.drawString(isEn?(dateArray[2]):locale.month(date,true), 4, 176, true);
     buf.setFontAlign(1, 0);
-    buf.drawString(isEn?locale.month(date,true):(' ' + dateArray[2]), 237, 160, true);
+    //Monat
+    buf.drawString(isEn?(dateArray[2]):locale.month(date,true), 237, 160, true);
+    //Jahr
     buf.drawString(dateArray[3], 237, 176, true);
 
     // draw hour and minute dots

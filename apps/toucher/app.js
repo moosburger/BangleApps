@@ -114,7 +114,7 @@ function render(){
       g.setFont(font, fontSize);
       g.setColor(scale,scale,scale);
       g.setFontAlign(0,0);
-      g.drawString(app.name, HALF, HALF - 30);
+      g.drawString(app.name, HALF, HEIGHT / 10);
       return;
     }
 
