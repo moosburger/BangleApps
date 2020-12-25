@@ -7,6 +7,12 @@ const Center = { "x": 120, "y": 96 };
 const Widths = { hour: 2, minute: 2, second: 1 };
 var buf = Graphics.createArrayBuffer(240,192,1,{msb:true});
 
+const Storage = require("Storage");
+const filename = 'miclock2.json';
+let settings = Storage.readJSON(filename,1) || {
+  size : 2  
+};
+
 function rotatePoint(x, y, d) {
     rad = -1 * d / 180 * Math.PI;
     var sin = Math.sin(rad);
@@ -67,10 +73,10 @@ function drawMixedClock(force) {
     //Wochentag
     buf.drawString(locale.dow(date,true), 4, 160, true);
     //Tag
-    buf.drawString(isEn?(dateArray[2]):locale.month(date,true), 4, 176, true);
+    buf.drawString((dateArray[2]), 4, 176, true);
     buf.setFontAlign(1, 0);
     //Monat
-    buf.drawString(isEn?(dateArray[2]):locale.month(date,true), 237, 160, true);
+    buf.drawString(locale.month(date,true), 237, 160, true);
     //Jahr
     buf.drawString(dateArray[3], 237, 176, true);
 
@@ -86,9 +92,12 @@ function drawMixedClock(force) {
     }
 
     // draw digital time
-    //buf.setFont("6x8", 2);
-    //buf.setFontAlign(0, 0);
-    //buf.drawString(dateArray[4], 120, 120, true);
+    if(settings.size > 0)
+    {
+      buf.setFont("6x8", settings.size);
+      buf.setFontAlign(0, 0);
+      buf.drawString(dateArray[4], 120, 120, true);
+    }
 
     // draw new second hand
     point = rotatePoint(0, Radius.sec, second * 6);

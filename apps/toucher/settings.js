@@ -9,6 +9,7 @@
       highres: true,
       animation : true,
       frame : 3,
+      toppos : 6,
       debug: true
     };
   }
@@ -48,6 +49,11 @@
       value : settings.frame,
       min: 1, max: 10, step: 1,
       onchange : saveChange('frame')
+    },
+    "Top Position" : {
+      value : settings.toppos,
+      min: 2, max: 10, step: 1,
+      onchange : saveChange('toppos')
     },
     "Debug" : {
       value : settings.debug,

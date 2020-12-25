@@ -7,6 +7,7 @@ let settings = Storage.readJSON(filename,1) || {
   hightres: true,
   animation : true,
   frame : 3,
+  toppos : 6,
   debug: false
 };
 
@@ -114,7 +115,7 @@ function render(){
       g.setFont(font, fontSize);
       g.setColor(scale,scale,scale);
       g.setFontAlign(0,0);
-      g.drawString(app.name, HALF, HEIGHT / 10);
+      g.drawString(app.name, HALF, HEIGHT / toppos);
       return;
     }
 

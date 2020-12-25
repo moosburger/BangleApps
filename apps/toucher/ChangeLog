@@ -5,3 +5,5 @@
 0.05: Improve perf
 0.06: Complete rewrite in 80x80, better perf, add settings
 0.07: Added Version information on Exit Screen
+0.08: reformattet information
+0.09: Inofomation screen Top Position via settings
