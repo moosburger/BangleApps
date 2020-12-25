@@ -115,7 +115,7 @@ function render(){
       g.setFont(font, fontSize);
       g.setColor(scale,scale,scale);
       g.setFontAlign(0,0);
-      g.drawString(app.name, HALF, HEIGHT / toppos);
+      g.drawString(app.name, HALF, HEIGHT / settings.toppos);
       return;
     }
 
