@@ -29,9 +29,9 @@
 
   E.showMenu({
     '': { 'title': 'Clock settings' },
-    "Size digital clock" : {
+    "Size dig. clock" : {
       value : settings.size,
-      min: 0, max: 3, step: 1,
+      min: 0, max: 2, step: 1,
       onchange : saveChange('size')
     },
     '< Back': back

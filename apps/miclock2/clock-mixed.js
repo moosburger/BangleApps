@@ -10,7 +10,7 @@ var buf = Graphics.createArrayBuffer(240,192,1,{msb:true});
 const Storage = require("Storage");
 const filename = 'miclock2.json';
 let settings = Storage.readJSON(filename,1) || {
-  size : 2  
+  size : 1  
 };
 
 function rotatePoint(x, y, d) {
@@ -94,7 +94,7 @@ function drawMixedClock(force) {
     // draw digital time
     if(settings.size > 0)
     {
-      buf.setFont("6x8", settings.size);
+      buf.setFont("6x8", settings.size + 1);
       buf.setFontAlign(0, 0);
       buf.drawString(dateArray[4], 120, 120, true);
     }

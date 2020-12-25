@@ -3,6 +3,7 @@ var MEM = process.memory();
 
 const Storage = require("Storage");
 const filename = 'toucher.json';
+var locale = require("locale");
 let settings = Storage.readJSON(filename,1) || {
   hightres: true,
   animation : true,
@@ -43,10 +44,12 @@ function getPosition(index){
 }
 
 function getApps(){
+  var isEn = locale.name.startsWith("en");
+  var label = isEn?("Exit"):"Beenden";
   const exit_app = {
     name: "        BANGLEJS.COM\n"
       + " Powered by Espruino\n\n\n"
-      + "      Beenden\n\n\n  Version   :" + ENV.VERSION
+      + "      " + label + "\n\n\n  Version   :" + ENV.VERSION
       + "\n  Bootloader:" + getVersion("boot.info")
       + "\n  Launcher  :" + getVersion("toucher.info")
       + "\n  Settings  :" + getVersion("setting.info"),
