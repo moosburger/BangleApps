@@ -92,12 +92,6 @@
       step: 1000,
       onchange: save('cStepGoal'),
     },
-    'Debug': {
-      value: settings.cDebug,
-      min: false,
-      max: true,
-      onchange: save('cDebug'),
-    },
     '< Back': back
   });
 });

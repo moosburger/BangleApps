@@ -26,9 +26,10 @@
 * jshint esversion: 6
 **************************************************************************************************/
 var locale = require("locale");
-const Radius = { "center": 4, "hour": 66, "min": 86, "sec" : 91, "dots": 110 };
-const Center = { "x": 120, "y": 120 };
+const Radius = { "center": 4, "hour": 60, "min": 80, "sec" : 85, "dots": 92 };
+const Center = { "x": 120, "y": 96 };
 const Widths = { hour: 2, minute: 2, second: 1 };
+var buf = Graphics.createArrayBuffer(240,192,1,{msb:true});
 
 const CHARGING = 0x0007E0;
 const CLOCK = -1; // always white
@@ -39,7 +40,7 @@ const Storage = require("Storage");
 const filename = 'miclock2.json';
 let settings = Storage.readJSON(filename,1) || {
   cDebug: true,
-  cSize: 1,
+  cSize: 2,
   cShowRAM: false,
   cMaxTime: 1100,
   cMinTime: 240,
@@ -77,10 +78,10 @@ function drawBT() {
     isConnected = (NRF.getSecurityStatus().connected);
 
   if (isConnected == true)
-    g.setColor(BTCON);
+    buf.setColor(BTCON);
   else
-    g.setColor(BTDIS);
-  g.drawImage(img_bt, Center.x + ox, Center.y - Radius.dots + oy);
+    buf.setColor(BTDIS);
+  buf.drawImage(img_bt, Center.x + ox, Center.y - Radius.dots + oy);
 }
 
 //*************************************************************************************************
@@ -94,22 +95,22 @@ function drawBatt() {
   var w = 30;
   var h = 16;
   var ox = 82;
-  var oy = 4;
+  var oy = 0;
 
   if (Bangle.isCharging()) {
-    g.setColor(CHARGING).drawImage(img_Bat, Center.x + ox - 16, Center.y - Radius.dots - oy - 4);
+    buf.setColor(CHARGING).drawImage(img_Bat, Center.x + ox - 16, Center.y - Radius.dots - oy - 4);
   }
 
-  g.setColor(CLOCK);
-  g.fillRect (Center.x + ox, Center.y - Radius.dots - oy, Center.x + w + ox, Center.y - Radius.dots -oy + 16);
-  g.clearRect(Center.x + ox + 2, Center.y - Radius.dots - oy + 2, Center.x + ox + w - 2, Center.y - Radius.dots + h - oy - 2);
-  g.fillRect (Center.x + ox + w, Center.y - Radius.dots - oy + 4, Center.x + ox + w + 4, Center.y - Radius.dots + h - oy - 4);
-  g.setColor(CHARGING).fillRect(Center.x + ox + 2, Center.y - Radius.dots - oy + 2, Center.x + ox + 2 + E.getBattery()*(w-4)/100,Center.y - Radius.dots + h - oy - 2);
-  g.setColor(-1);
+  buf.setColor(CLOCK);
+  buf.fillRect (Center.x + ox, Center.y - Radius.dots - oy, Center.x + w + ox, Center.y - Radius.dots -oy + 16);
+  buf.clearRect(Center.x + ox + 2, Center.y - Radius.dots - oy + 2, Center.x + ox + w - 2, Center.y - Radius.dots + h - oy - 2);
+  buf.fillRect (Center.x + ox + w, Center.y - Radius.dots - oy + 4, Center.x + ox + w + 4, Center.y - Radius.dots + h - oy - 4);
+  buf.setColor(CHARGING).fillRect(Center.x + ox + 2, Center.y - Radius.dots - oy + 2, Center.x + ox + 2 + E.getBattery()*(w-4)/100,Center.y - Radius.dots + h - oy - 2);
+  buf.setColor(-1);
 }
 
 //*************************************************************************************************
-// FunktionsName:   rotatePoint
+// FunktionsName:   showRAMUsage
 /// \details
 /// \param[in]      -
 /// \return         -
@@ -118,7 +119,7 @@ function showRAMUsage() {
 
     var m = process.memory();
     var pc = Math.round(m.usage*100/m.total);
-    g.drawString(pc+"%", Center.x - 40, Center.y - 40, true);
+    buf.drawString(pc+"%", Center.x + 5, Center.y - 40, true);
 }
 
 //*************************************************************************************************
@@ -135,7 +136,7 @@ function setStepSensitivity(s) {
 }
 
 //*************************************************************************************************
-// FunktionsName:   drawBT
+// FunktionsName:   drawPEDO
 /// \details
 /// \param[in]      -
 /// \return         -
@@ -144,9 +145,8 @@ function drawPEDO() {
 
   var fx = 0;
 
-  g.reset();
-  g.setFont("6x8", 2);
-  g.setFontAlign(-1, 0);
+  buf.setFont("6x8", 2);
+  buf.setFontAlign(-1, 0);
   if (steps < 10)
     fx = 48;
   else if (steps < 100)
@@ -157,18 +157,18 @@ function drawPEDO() {
     fx = 12;
 
   if (steps >= settings.cStepGoal)
-    g.setColor(CHARGING);
+    buf.setColor(CHARGING);
 
   //g.drawImage(img_Pedo, Center.x - 118, Center.y - Radius.dots - 1);
   //g.drawString(steps, Center.x - 105 + fx, Center.y - Radius.dots + 4);
   //g.drawImage(img_Pedo, Center.x - 116, Center.y - Radius.dots + 16);
 
-  g.drawImage(img_Pedo, Center.x - 57, Center.y - Radius.dots - 2);
-  g.drawString(steps, Center.x - 118 + fx, Center.y - Radius.dots + 4);
+  buf.drawImage(img_Pedo, Center.x - 57, Center.y - Radius.dots - 2);
+  buf.drawString(steps, Center.x - 118 + fx, Center.y - Radius.dots + 4);
 }
 
 //*************************************************************************************************
-// FunktionsName:   rotatePoint
+// FunktionsName:   calcSteps
 /// \details
 /// \param[in]      -
 /// \return         -
@@ -256,7 +256,7 @@ function setLineWidth(x1, y1, x2, y2, lw) {
 /// \return         -
 //*************************************************************************************************
 function drawMixedClock(force) {
-  if ((force || Bangle.isLCDOn())) {
+  if ((force || Bangle.isLCDOn()) && buf.buffer) {
     var date = new Date();
     var dateArray = date.toString().split(" ");
     var isEn = locale.name.startsWith("en");
@@ -268,56 +268,56 @@ function drawMixedClock(force) {
     var radius;
 
     g.reset();
-    g.clear();
+    buf.clear();
 
-    g.setColor(CLOCK);
+    buf.setColor(CLOCK);
     // draw date
-    g.setFont("6x8", 2);
-    g.setFontAlign(-1, 0);
+    buf.setFont("6x8", 2);
+    buf.setFontAlign(-1, 0);
     //Wochentag
-    g.drawString(locale.dow(date,true), Center.x - 116, Center.y + Radius.dots - 26, true);
+    buf.drawString(locale.dow(date,true), Center.x - 116, Center.y + Radius.dots - 26, true);
     //Tag
-    g.drawString((dateArray[2]), Center.x - 116, Center.y + Radius.dots - 6, true);
-    g.setFontAlign(1, 0);
+    buf.drawString((dateArray[2]), Center.x - 116, Center.y + Radius.dots - 6, true);
+    buf.setFontAlign(1, 0);
     //Monat
-    g.drawString(locale.month(date,true), Center.x + 116, Center.y + Radius.dots - 26, true);
+    buf.drawString(locale.month(date,true), Center.x + 116, Center.y + Radius.dots - 26, true);
     //Jahr
-    g.drawString(dateArray[3], Center.x + 116, Center.y + Radius.dots - 6, true);
+    buf.drawString(dateArray[3], Center.x + 116, Center.y + Radius.dots - 6, true);
 
     // draw hour and minute dots
     for (i = 0; i < 60; i++) {
         radius = (i % 5) ? 1 : 0;
         point = rotatePoint(0, Radius.dots, i * 6);
-        g.fillCircle(point[0], point[1], radius);
+        buf.fillCircle(point[0], point[1], radius);
         point = rotatePoint(0, Radius.dots, i * 30);
         start = rotatePoint(0, Radius.dots - 12, i * 30);
-        g.drawLine(start[0], start[1], point[0], point[1]);
-        g.fillPoly(setLineWidth(start[0], start[1], point[0], point[1], 2));
+        buf.drawLine(start[0], start[1], point[0], point[1]);
+        buf.fillPoly(setLineWidth(start[0], start[1], point[0], point[1], 2));
     }
 
     // draw digital time
     if(settings.cSize > 0)
     {
-      g.setFont("6x8", settings.cSize + 1);
-      g.setFontAlign(0, 0);
-      g.drawString(dateArray[4], Center.x, Center.y, true);
+      buf.setFont("6x8", settings.cSize + 1);
+      buf.setFontAlign(0, 0);
+      buf.drawString(dateArray[4], Center.x, Center.y, true);
     }
 
     // draw new second hand
     point = rotatePoint(0, Radius.sec, second * 6);
-    g.drawLine(Center.x, Center.y, point[0], point[1]);
-    g.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
+    buf.drawLine(Center.x, Center.y, point[0], point[1]);
+    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
 
     // draw new minute hand
     point = rotatePoint(0, Radius.min, minute * 6);
-    g.drawLine(Center.x, Center.y, point[0], point[1]);
-    g.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.minute));
+    buf.drawLine(Center.x, Center.y, point[0], point[1]);
+    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.minute));
     // draw new hour hand
     point = rotatePoint(0, Radius.hour, hour % 12 * 30 + date.getMinutes() / 2 | 0);
-    g.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.hour));
+    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.hour));
 
     // draw center
-    g.fillCircle(Center.x, Center.y, Radius.Center);
+    buf.fillCircle(Center.x, Center.y, Radius.Center);
 
     if((settings.cShowRAM == true) || (settings.cDebug == true))
       showRAMUsage();
@@ -332,6 +332,8 @@ function drawMixedClock(force) {
 
     drawBatt();
     drawPEDO();
+
+    g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer},0,24);
   }
 }
 
@@ -362,12 +364,13 @@ Bangle.on('step', (up) => {
 setInterval(() => drawMixedClock(true), 30000); // force an update every 30s even screen is off
 
 g.clear();
-Bangle.loadWidgets();
-Bangle.drawWidgets();
+//Bangle.loadWidgets();
+//Bangle.drawWidgets();
 drawMixedClock(); // immediately draw
 setInterval(drawMixedClock, 500); // update twice a second
 
 setStepSensitivity(settings.cStepSensitivity); //set step sensitivity (80 is standard, 400 is muss less sensitive)
 
 // Show launcher when middle button pressed after freeing memory first
-setWatch(() => {Bangle.showLauncher()}, BTN2, {repeat:false,edge:"falling"});
+//setWatch(() => {Bangle.showLauncher()}, BTN2, {repeat:false,edge:"falling"});
+setWatch(() => {delete buf.buffer; Bangle.showLauncher()}, BTN2, {repeat:false,edge:"falling"});
