@@ -13,7 +13,7 @@
 *	\version    1.0  -  05.08.2014
 */
 /*< History > *************************************************************************************
-*	Version     Datum       Kürzel      Ticket#     Beschreibung
+*	Version     Datum       Kuerzel      Ticket#     Beschreibung
 *   0.8.0.0     15.03.2018  GP          -------     Ersterstellung
 * </ History >******************************************************************/
 
@@ -26,7 +26,8 @@ const filename = 'miclock2.json';
 let settings = Storage.readJSON(filename,1) || {
   cDebug: true,
   cSize: 2,
-  cMoveCenter : 8,
+  cDiameter : 0,
+  cMoveCenter : 0,
   cShowRAM: false,
   cMaxTime: 1100,
   cMinTime: 240,
@@ -40,7 +41,7 @@ let settings = Storage.readJSON(filename,1) || {
 * Defines
 * jshint esversion: 6
 **************************************************************************************************/
-const Radius = { "center": 4, "hour": 60 + settings.cMoveCenter, "min": 80 + settings.cMoveCenter, "sec" : 85 + settings.cMoveCenter, "dots": 92 + settings.cMoveCenter };
+const Radius = { "center": 4, "hour": 60 + settings.cDiameter, "min": 80 + settings.cDiameter, "sec" : 85 + settings.cDiameter, "dots": 92 + settings.cDiameter };
 const Center = { "x": 120, "y": 120};
 const Widths = { hour: 2, minute: 2, second: 1 };
 var buf = Graphics.createArrayBuffer(240,240,1,{msb:true});
@@ -333,7 +334,7 @@ function drawMixedClock(force) {
     drawBatt();
     drawPEDO();
 
-    g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer},0,0);//24 + settings.cMoveCenter);
+    g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer},0,24 + settings.cMoveCenter);
   }
 }
 

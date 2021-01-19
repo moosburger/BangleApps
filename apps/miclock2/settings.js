@@ -8,7 +8,8 @@
     return {
       cDebug: false,
       cSize: 2,
-      cMoveCenter: 20,
+      cMoveCenter: 0,
+      cDiameter: 0,
       cShowRAM: false,
       cMaxTime: 1100,
       cMinTime: 240,
@@ -45,15 +46,20 @@
     },
     "Center" : {
       value : settings.cMoveCenter,
-      min : 0, max : 30, step : 1,
+      min : -10, max : 30, step : 1,
       onchange : saveChange('cMoveCenter')
+    },
+    "Diameter" : {
+      value : settings.cDiameter,
+      min : -10, max : 30, step : 1,
+      onchange : saveChange('cDiameter')
     },
     "Show RAM": {
       value : settings.cShowRAM,
       format : v => v?"On":"Off",
       onchange : saveChange('cShowRAM')
     },
-    "Max time (ms)": {
+/*    "Max time (ms)": {
       value : settings.cMaxTime,
       min : 0, max : 10000, step : 100,
       onchange : saveChange('cMaxTime')
@@ -82,7 +88,7 @@
       value : settings.cStepGoal,
       min : 1000, max : 100000, step : 1000,
       onchange : saveChange('cStepGoal')
-    },
+    },*/
     '< Back': back
   });
 });
