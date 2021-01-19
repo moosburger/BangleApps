@@ -64,7 +64,7 @@
       onchange : saveChange('cMinTime')
     },
     "Step threshold": {
-      value : settings.sCtepThreshold,
+      value : settings.cStepThreshold,
       min : 0, max : 100, step : 1,
       onchange : saveChange('cStepThreshold')
     },
