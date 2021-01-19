@@ -35,7 +35,7 @@
       min: 0, max: 2, step: 1,
       onchange : saveChange('cSize')
     },
-    "Show RAM": {
+    "Debug" : {
       value : settings.cDebug,
       format : v => v?"On":"Off",
       onchange : saveChange('cDebug')
