@@ -13,35 +13,20 @@
 *	\version    1.0  -  05.08.2014
 */
 /*< History > *************************************************************************************
-*	Version     Datum       KÃ¼rzel      Ticket#     Beschreibung
+*	Version     Datum       Kürzel      Ticket#     Beschreibung
 *   0.8.0.0     15.03.2018  GP          -------     Ersterstellung
 * </ History >******************************************************************/
 
 /**************************************************************************************************
 * Includes
 **************************************************************************************************/
-
-/**************************************************************************************************
-* Defines
-* jshint esversion: 6
-**************************************************************************************************/
 var locale = require("locale");
-const Radius = { "center": 4, "hour": 60, "min": 80, "sec" : 85, "dots": 92 };
-const Center = { "x": 120, "y": 96 };
-const Widths = { hour: 2, minute: 2, second: 1 };
-var buf = Graphics.createArrayBuffer(240,192,1,{msb:true});
-
-const CHARGING = 0x0007E0;
-const CLOCK = -1; // always white
-const BTCON = 0x00041F;
-const BTDIS = 0x004A69;
-
 const Storage = require("Storage");
 const filename = 'miclock2.json';
 let settings = Storage.readJSON(filename,1) || {
   cDebug: true,
   cSize: 2,
-  cMoveCenter : 20,
+  cMoveCenter : 8,
   cShowRAM: false,
   cMaxTime: 1100,
   cMinTime: 240,
@@ -50,6 +35,20 @@ let settings = Storage.readJSON(filename,1) || {
   cStepSensitivity: 80,
   cStepGoal: 10000
 };
+
+/**************************************************************************************************
+* Defines
+* jshint esversion: 6
+**************************************************************************************************/
+const Radius = { "center": 4, "hour": 60 + settings.cMoveCenter, "min": 80 + settings.cMoveCenter, "sec" : 85 + settings.cMoveCenter, "dots": 92 + settings.cMoveCenter };
+const Center = { "x": 120, "y": 120};
+const Widths = { hour: 2, minute: 2, second: 1 };
+var buf = Graphics.createArrayBuffer(240,240,1,{msb:true});
+
+const CHARGING = 0x0007E0;
+const CLOCK = -1; // always white
+const BTCON = 0x00041F;
+const BTDIS = 0x004A69;
 
 /**************************************************************************************************
 * Variablen
@@ -334,7 +333,7 @@ function drawMixedClock(force) {
     drawBatt();
     drawPEDO();
 
-    g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer},0,24 + settings.cMoveCenter);
+    g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer},0,0);//24 + settings.cMoveCenter);
   }
 }
 
