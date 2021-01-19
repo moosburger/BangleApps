@@ -33,7 +33,7 @@
     return function(v){
       settings[name] = v;
       updateSettings();
-    };
+    }
   }
 
   E.showMenu({
@@ -55,54 +55,54 @@
     'Show RAM': {
       value: settings.cShowRAM,
       format : v => v?"On":"Off",
-      onchange: saveChange('cShowRAM'),
+      onchange: saveChange('cShowRAM')
     },
     'Max time (ms)': {
       value: settings.cMaxTime,
       min: 0,
       max: 10000,
       step: 100,
-      onchange: saveChange('cMaxTime'),
+      onchange: saveChange('cMaxTime')
     },
     'Min time (ms)': {
       value: settings.cMinTime,
       min: 0,
       max: 500,
       step: 10,
-      onchange: saveChange('cMinTime'),
+      onchange: saveChange('cMinTime')
     },
     'Step threshold': {
       value: settings.sCtepThreshold,
       min: 0,
       max: 100,
       step: 1,
-      onchange: saveChange('cStepThreshold'),
+      onchange: saveChange('cStepThreshold')
     },
     'Act.Res. (ms)': {
       value: settings.cIntervalResetActive,
       min: 100,
       max: 100000,
       step: 1000,
-      onchange: saveChange('cIntervalResetActive'),
+      onchange: saveChange('cIntervalResetActive')
     },
     'Step sens.': {
       value: settings.cStepSensitivity,
       min: 0,
       max: 1000,
       step: 10,
-      onchange: saveChange('cStepSensitivity'),
+      onchange: saveChange('cStepSensitivity')
     },
     'Step goal': {
       value: settings.cStepGoal,
       min: 1000,
       max: 100000,
       step: 1000,
-      onchange: save('cStepGoal'),
+      onchange: save('cStepGoal')
     },
     'cDebug': {
       value: settings.cDebug,
       format : v => v?"On":"Off",
-      onchange: saveChange('cDebug'),
+      onchange: saveChange('cDebug')
     },
     '< Back': back
   });
