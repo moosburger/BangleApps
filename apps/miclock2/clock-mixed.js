@@ -41,6 +41,7 @@ const filename = 'miclock2.json';
 let settings = Storage.readJSON(filename,1) || {
   cDebug: true,
   cSize: 2,
+  cMoveCenter : 20,
   cShowRAM: false,
   cMaxTime: 1100,
   cMinTime: 240,
@@ -333,7 +334,7 @@ function drawMixedClock(force) {
     drawBatt();
     drawPEDO();
 
-    g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer},0,24);
+    g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer},0,24 + settings.cMoveCenter);
   }
 }
 

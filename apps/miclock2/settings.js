@@ -8,6 +8,7 @@
     return {
       cDebug: false,
       cSize: 2,
+      cMoveCenter: 20,
       cShowRAM: false,
       cMaxTime: 1100,
       cMinTime: 240,
@@ -38,52 +39,58 @@
   E.showMenu({
     '': { 'title': 'Clock settings' },
     "Size dig. clock" : {
-      value : settings.size,
+      value : settings.cSize,
       min: 0,
       max: 2,
       step: 1,
-      onchange : saveChange('size')
+      onchange : saveChange('cSize')
+    },
+    "Center" : {
+      value : settings.cMoveCenter,
+      min: 0,
+      max: 30,
+      step: 1,
+      onchange : saveChange('cMoveCenter')
     },
     'Show RAM': {
       value: settings.cShowRAM,
-      min: false,
-      max: true,
-      onchange: save('cShowRAM'),
+      format : v => v?"On":"Off",
+      onchange: saveChange('cShowRAM'),
     },
     'Max time (ms)': {
       value: settings.cMaxTime,
       min: 0,
       max: 10000,
       step: 100,
-      onchange: save('cMaxTime'),
+      onchange: saveChange('cMaxTime'),
     },
     'Min time (ms)': {
       value: settings.cMinTime,
       min: 0,
       max: 500,
       step: 10,
-      onchange: save('cMinTime'),
+      onchange: saveChange('cMinTime'),
     },
     'Step threshold': {
       value: settings.sCtepThreshold,
       min: 0,
       max: 100,
       step: 1,
-      onchange: save('cStepThreshold'),
+      onchange: saveChange('cStepThreshold'),
     },
     'Act.Res. (ms)': {
       value: settings.cIntervalResetActive,
       min: 100,
       max: 100000,
       step: 1000,
-      onchange: save('cIntervalResetActive'),
+      onchange: saveChange('cIntervalResetActive'),
     },
     'Step sens.': {
       value: settings.cStepSensitivity,
       min: 0,
       max: 1000,
       step: 10,
-      onchange: save('cStepSensitivity'),
+      onchange: saveChange('cStepSensitivity'),
     },
     'Step goal': {
       value: settings.cStepGoal,
@@ -91,6 +98,11 @@
       max: 100000,
       step: 1000,
       onchange: save('cStepGoal'),
+    },
+    'cDebug': {
+      value: settings.cDebug,
+      format : v => v?"On":"Off",
+      onchange: saveChange('cDebug'),
     },
     '< Back': back
   });
