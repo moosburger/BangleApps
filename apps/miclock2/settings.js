@@ -6,15 +6,16 @@
 
   function getSettings(){
     return {
+      cDebug: false,
       cSize: 2
     };
   }
-  
+
   function updateSettings() {
     require("Storage").writeJSON(filename, settings);
     Bangle.buzz();
   }
-  
+
   if(!settings){
     settings = getSettings();
     updateSettings();
@@ -34,7 +35,12 @@
       min: 0, max: 2, step: 1,
       onchange : saveChange('cSize')
     },
+    "Show RAM": {
+      value : settings.cDebug,
+      format : v => v?"On":"Off",
+      onchange : saveChange('cDebug')
+    },
     '< Back': back
   });
 });
- 
+
