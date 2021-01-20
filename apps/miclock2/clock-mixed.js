@@ -201,12 +201,12 @@ function drawMixedClock(force) {
     }
     g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer}, 0, 38 - settings.cDiameter);
 
-    g.setColor(0x0F00);
+    /*g.setColor(0x0F00);
     g.drawLine(1, 120 + settings.cDiameter - 2, 240, 120 + settings.cDiameter- 2);
     g.drawLine(120, 1, 120, 240);
     g.setColor(0xF000);
     g.drawLine(1, 120, 240, 120);
-    g.drawLine(1, 24, 238, 24);
+    g.drawLine(1, 24, 238, 24);*/
   }
 }
 

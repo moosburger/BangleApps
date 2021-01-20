@@ -99,6 +99,11 @@ function draw_clock(){
     g.drawImage(tick1.asImage(), rotate_around_x(big_wheel_x(i*6), agl, tick1), rotate_around_y(big_wheel_y(i*6), agl, tick1), {rotate:agl*p180});
   }
 
+      g.setFont("6x8", 2);
+    var m = process.memory();
+    var pc = Math.round(m.usage*100/m.total);
+    g.drawString(pc+"%", 125, 80, true);
+  
   g.flip();
   //console.log(date);
 }
