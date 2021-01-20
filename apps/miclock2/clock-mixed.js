@@ -25,9 +25,9 @@ const Storage = require("Storage");
 const filename = 'miclock2.json';
 let settings = Storage.readJSON(filename,1) || {
   cDebug: true,
-  cSize: 2,
-  cDiameter : 0,
-  cMoveCenter : 0,
+  cSize: 0,
+  cDiameter : 23,
+  cMoveCenter : -24,
   cShowRAM: false,
   cMaxTime: 1100,
   cMinTime: 240,
@@ -41,15 +41,17 @@ let settings = Storage.readJSON(filename,1) || {
 * Defines
 * jshint esversion: 6
 **************************************************************************************************/
-const Radius = { "center": 4, "hour": 60 + settings.cDiameter, "min": 80 + settings.cDiameter, "sec" : 85 + settings.cDiameter, "dots": 92 + settings.cDiameter };
+const Radius = { "center": 6, "hour": 60 + settings.cDiameter, "min": 80 + settings.cDiameter, "sec" : 85 + settings.cDiameter, "dots": 92 + settings.cDiameter };
 const Center = { "x": 120, "y": 120};
 const Widths = { hour: 2, minute: 2, second: 1 };
 var buf = Graphics.createArrayBuffer(240,240,1,{msb:true});
 
-const CHARGING = 0x0007E0;
+const CHARGING = -1;//0x0007E0;
 const CLOCK = -1; // always white
-const BTCON = 0x00041F;
-const BTDIS = 0x004A69;
+//const BTCON = 0x00041F;
+//const BTDIS = 0x004A69;
+const BTCON = -1;
+const BTDIS = 0x000000;
 
 /**************************************************************************************************
 * Variablen
@@ -72,10 +74,10 @@ var steps = 0; //steps taken
 //*************************************************************************************************
 function drawBT() {
   var isConnected = true;
-  var ox = 104;
-  var oy = 20;
+  var ox = 108;
+  var oy = 28;
 
-  if (settings.Debug == 0)
+  if (settings.cDebug == false)
     isConnected = (NRF.getSecurityStatus().connected);
 
   if (isConnected == true)
@@ -95,10 +97,10 @@ function drawBatt() {
 
   var w = 30;
   var h = 16;
-  var ox = 82;
+  var ox = 85;
   var oy = 0;
 
-  if (Bangle.isCharging()) {
+  if ((Bangle.isCharging()) || (settings.cDebug == true)) {
     buf.setColor(CHARGING).drawImage(img_Bat, Center.x + ox - 16, Center.y - Radius.dots - oy - 4);
   }
 
@@ -156,6 +158,8 @@ function drawPEDO() {
     fx = 24;
   else if (steps < 10000)
     fx = 12;
+
+  fx -= 2;
 
   if (steps >= settings.cStepGoal)
     buf.setColor(CHARGING);
@@ -273,27 +277,35 @@ function drawMixedClock(force) {
 
     buf.setColor(CLOCK);
     // draw date
-    buf.setFont("6x8", 2);
-    buf.setFontAlign(-1, 0);
+    buf.setFont("6x8", 3);
+    buf.setFontAlign(0, 0);
     //Wochentag
-    buf.drawString(locale.dow(date,true), Center.x - 116, Center.y + Radius.dots - 26, true);
+    //buf.drawString(locale.dow(date,true), Center.x - 116, Center.y + Radius.dots - 26, true);
     //Tag
-    buf.drawString((dateArray[2]), Center.x - 116, Center.y + Radius.dots - 6, true);
-    buf.setFontAlign(1, 0);
+    //buf.drawString((dateArray[2]), Center.x - 116, Center.y + Radius.dots - 6, true);
+    //buf.setFontAlign(1, 0);
     //Monat
-    buf.drawString(locale.month(date,true), Center.x + 116, Center.y + Radius.dots - 26, true);
+    //buf.drawString(locale.month(date,true), Center.x + 116, Center.y + Radius.dots - 26, true);
     //Jahr
-    buf.drawString(dateArray[3], Center.x + 116, Center.y + Radius.dots - 6, true);
+    //buf.drawString(dateArray[3], Center.x + 116, Center.y + Radius.dots - 6, true);
+
+    //Tag
+    buf.setFont("6x8", 3);
+    buf.setFontAlign(0, 0);
+    buf.drawString((dateArray[2]), Center.x + 80, Center.y, true);
+    buf.setFont("6x8", 2);
 
     // draw hour and minute dots
     for (i = 0; i < 60; i++) {
-        radius = (i % 5) ? 1 : 0;
-        point = rotatePoint(0, Radius.dots, i * 6);
+        radius = (i % 5) ? 4 : 0;
+        //Punkte
+        point = rotatePoint(0, Radius.dots, i * 30); // 30 = Minuten; 6 = Sekunden
         buf.fillCircle(point[0], point[1], radius);
-        point = rotatePoint(0, Radius.dots, i * 30);
-        start = rotatePoint(0, Radius.dots - 12, i * 30);
+        //Linien
+        point = rotatePoint(0, Radius.dots, i * 6);    // 30 = Minuten; 6 = Sekunden
+        start = rotatePoint(0, Radius.dots - 5, i * 6);// 30 = Minuten; 6 = Sekunden
         buf.drawLine(start[0], start[1], point[0], point[1]);
-        buf.fillPoly(setLineWidth(start[0], start[1], point[0], point[1], 2));
+        buf.fillPoly(setLineWidth(start[0], start[1], point[0], point[1], 1));
     }
 
     // draw digital time
@@ -308,7 +320,10 @@ function drawMixedClock(force) {
     point = rotatePoint(0, Radius.sec, second * 6);
     buf.drawLine(Center.x, Center.y, point[0], point[1]);
     buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
-
+    // draw backside for second hand
+    point = rotatePoint(0, -Radius.sec / 3, second * 6);
+    buf.drawLine(Center.x, Center.y, point[0], point[1]);
+    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
     // draw new minute hand
     point = rotatePoint(0, Radius.min, minute * 6);
     buf.drawLine(Center.x, Center.y, point[0], point[1]);
@@ -316,21 +331,13 @@ function drawMixedClock(force) {
     // draw new hour hand
     point = rotatePoint(0, Radius.hour, hour % 12 * 30 + date.getMinutes() / 2 | 0);
     buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.hour));
-
     // draw center
-    buf.fillCircle(Center.x, Center.y, Radius.Center);
+    buf.fillCircle(Center.x, Center.y, Radius.center);
 
     if((settings.cShowRAM == true) || (settings.cDebug == true))
       showRAMUsage();
 
-    if (settings.cDebug == false)
-    {
-      NRF.on('connect',drawBT);
-      NRF.on('disconnect',drawBT);
-    }
-    else
-      drawBT();
-
+    drawBT();
     drawBatt();
     drawPEDO();
 

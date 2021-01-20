@@ -7,9 +7,9 @@
   function getSettings(){
     return {
       cDebug: false,
-      cSize: 2,
-      cMoveCenter: 0,
-      cDiameter: 0,
+      cSize: 0,
+      cDiameter : 23,
+      cMoveCenter : -24,
       cShowRAM: false,
       cMaxTime: 1100,
       cMinTime: 240,
@@ -46,12 +46,12 @@
     },
     "Center" : {
       value : settings.cMoveCenter,
-      min : -10, max : 30, step : 1,
+      min : -30, max : 30, step : 1,
       onchange : saveChange('cMoveCenter')
     },
     "Diameter" : {
       value : settings.cDiameter,
-      min : -10, max : 30, step : 1,
+      min : -30, max : 30, step : 1,
       onchange : saveChange('cDiameter')
     },
     "Show RAM": {
