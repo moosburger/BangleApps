@@ -2083,7 +2083,7 @@
   { "id": "miclock2",
     "name": "Mixed Clock 2",
     "icon": "clock-mixed.png",
-    "version":"0.09",
+    "version":"0.10",
     "description": "White color variant of the Mixed Clock2 and sizeable digital clock, added Bluetooth, Battery and Pedometer",
     "tags": "clock",
     "type":"clock",

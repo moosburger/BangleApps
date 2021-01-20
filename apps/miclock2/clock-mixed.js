@@ -21,6 +21,9 @@
 * Includes
 **************************************************************************************************/
 var locale = require("locale");
+//require("Font8x12").add(Graphics);
+require("Font6x12").add(Graphics);
+require("Font7x11Numeric7Seg").add(Graphics);
 const Storage = require("Storage");
 const filename = 'miclock2.json';
 let settings = Storage.readJSON(filename,1) || {
@@ -98,10 +101,10 @@ function drawBatt() {
   var w = 30;
   var h = 16;
   var ox = 85;
-  var oy = 12;
+  var oy = 26;
 
   if ((Bangle.isCharging()) || (settings.cDebug == true)) {
-    buf.setColor(CHARGING).drawImage(img_Bat, Center.x + ox - 16, Center.y + Radius.dots - oy - 4);
+    buf.setColor(CHARGING).drawImage(img_Bat, Center.x + ox - 16, Center.y + Radius.dots - 14);
   }
 
   buf.setColor(CLOCK);
@@ -148,7 +151,7 @@ function drawPEDO() {
 
   var fx = 0;
 
-  buf.setFont("6x8", 2);
+  buf.setFont("7x11Numeric7Seg", 1);
   buf.setFontAlign(-1, 0);
   if (steps < 10)
     fx = 48;
@@ -159,8 +162,6 @@ function drawPEDO() {
   else if (steps < 10000)
     fx = 12;
 
-  fx -= 2;
-
   if (steps >= settings.cStepGoal)
     buf.setColor(CHARGING);
 
@@ -168,8 +169,8 @@ function drawPEDO() {
   //g.drawString(steps, Center.x - 105 + fx, Center.y - Radius.dots + 4);
   //g.drawImage(img_Pedo, Center.x - 116, Center.y - Radius.dots + 16);
 
-  buf.drawImage(img_Pedo, Center.x - 57, Center.y + Radius.dots - 5);
-  buf.drawString(steps, Center.x - 118 + fx, Center.y + Radius.dots - 1);
+  buf.drawImage(img_Pedo, Center.x - 95, Center.y + Radius.dots - 32);
+  buf.drawString(steps, Center.x - 120 + fx, Center.y + Radius.dots - 14);
 }
 
 //*************************************************************************************************
@@ -277,7 +278,7 @@ function drawMixedClock(force) {
 
     buf.setColor(CLOCK);
     // draw date
-    buf.setFont("6x8", 3);
+    buf.setFont("7x11Numeric7Seg", 3);
     buf.setFontAlign(0, 0);
     //Wochentag
     //buf.drawString(locale.dow(date,true), Center.x - 116, Center.y + Radius.dots - 26, true);
@@ -290,9 +291,7 @@ function drawMixedClock(force) {
     //buf.drawString(dateArray[3], Center.x + 116, Center.y + Radius.dots - 6, true);
 
     //Tag
-    buf.setFont("6x8", 3);
-    buf.setFontAlign(0, 0);
-    buf.drawString((dateArray[2]), Center.x + 80, Center.y, true);
+    buf.drawString((dateArray[2]), Center.x + 75, Center.y, true);
     buf.setFont("6x8", 2);
 
     // draw hour and minute dots
@@ -373,7 +372,7 @@ setInterval(() => drawMixedClock(true), 30000); // force an update every 30s eve
 
 g.clear();
 Bangle.loadWidgets();
-//Bangle.drawWidgets();
+Bangle.drawWidgets();
 drawMixedClock(); // immediately draw
 setInterval(drawMixedClock, 500); // update twice a second
 
