@@ -98,17 +98,17 @@ function drawBatt() {
   var w = 30;
   var h = 16;
   var ox = 85;
-  var oy = 0;
+  var oy = 12;
 
   if ((Bangle.isCharging()) || (settings.cDebug == true)) {
-    buf.setColor(CHARGING).drawImage(img_Bat, Center.x + ox - 16, Center.y - Radius.dots - oy - 4);
+    buf.setColor(CHARGING).drawImage(img_Bat, Center.x + ox - 16, Center.y + Radius.dots - oy - 4);
   }
 
   buf.setColor(CLOCK);
-  buf.fillRect (Center.x + ox, Center.y - Radius.dots - oy, Center.x + w + ox, Center.y - Radius.dots -oy + 16);
-  buf.clearRect(Center.x + ox + 2, Center.y - Radius.dots - oy + 2, Center.x + ox + w - 2, Center.y - Radius.dots + h - oy - 2);
-  buf.fillRect (Center.x + ox + w, Center.y - Radius.dots - oy + 4, Center.x + ox + w + 4, Center.y - Radius.dots + h - oy - 4);
-  buf.setColor(CHARGING).fillRect(Center.x + ox + 2, Center.y - Radius.dots - oy + 2, Center.x + ox + 2 + E.getBattery()*(w-4)/100,Center.y - Radius.dots + h - oy - 2);
+  buf.fillRect (Center.x + ox, Center.y + Radius.dots - oy, Center.x + w + ox, Center.y + Radius.dots -oy + 16);
+  buf.clearRect(Center.x + ox + 2, Center.y + Radius.dots - oy + 2, Center.x + ox + w - 2, Center.y + Radius.dots + h - oy - 2);
+  buf.fillRect (Center.x + ox + w, Center.y + Radius.dots - oy + 4, Center.x + ox + w + 4, Center.y + Radius.dots + h - oy - 4);
+  buf.setColor(CHARGING).fillRect(Center.x + ox + 2, Center.y + Radius.dots - oy + 2, Center.x + ox + 2 + E.getBattery()*(w-4)/100,Center.y + Radius.dots + h - oy - 2);
   buf.setColor(-1);
 }
 
@@ -168,8 +168,8 @@ function drawPEDO() {
   //g.drawString(steps, Center.x - 105 + fx, Center.y - Radius.dots + 4);
   //g.drawImage(img_Pedo, Center.x - 116, Center.y - Radius.dots + 16);
 
-  buf.drawImage(img_Pedo, Center.x - 57, Center.y - Radius.dots - 2);
-  buf.drawString(steps, Center.x - 118 + fx, Center.y - Radius.dots + 4);
+  buf.drawImage(img_Pedo, Center.x - 57, Center.y + Radius.dots - 5);
+  buf.drawString(steps, Center.x - 118 + fx, Center.y + Radius.dots - 1);
 }
 
 //*************************************************************************************************
@@ -372,7 +372,7 @@ Bangle.on('step', (up) => {
 setInterval(() => drawMixedClock(true), 30000); // force an update every 30s even screen is off
 
 g.clear();
-//Bangle.loadWidgets();
+Bangle.loadWidgets();
 //Bangle.drawWidgets();
 drawMixedClock(); // immediately draw
 setInterval(drawMixedClock, 500); // update twice a second
