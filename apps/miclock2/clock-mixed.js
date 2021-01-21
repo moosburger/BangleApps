@@ -21,8 +21,6 @@
 * Includes
 **************************************************************************************************/
 var locale = require("locale");
-//require("Font8x12").add(Graphics);
-require("Font6x12").add(Graphics);
 require("Font7x11Numeric7Seg").add(Graphics);
 const Storage = require("Storage");
 const filename = 'miclock2.json';
@@ -37,19 +35,11 @@ let settings = Storage.readJSON(filename,1) || {
 * jshint esversion: 6
 **************************************************************************************************/
 const Radius = { "center": 6, "hour": 60 + settings.cDiameter, "min": 80 + settings.cDiameter, "sec" : 85 + settings.cDiameter, "dots": 93 + settings.cDiameter };
-const Center = { "x": 120, "y": 108};
-//const Center = { "x": 120, "y": 96 };
+const Center = { "x": 120, "y": 120 + settings.cDiameter - 2};
 const Widths = { hour: 2, minute: 2, second: 1 };
-var buf = Graphics.createArrayBuffer(240,216,1,{msb:true});
-//var buf = Graphics.createArrayBuffer(240,192,1,{msb:true});
+//var buf = Graphics.createArrayBuffer(240,216,1,{msb:true});
 
-const CHARGING = -1;//0x0007E0;
-const CLOCK = -1; // always white
-//const BTCON = 0x00041F;
-//const BTDIS = 0x004A69;
-const BTCON = -1;
-const BTDIS = 0x000000;
-
+const CLOCK = -1; 
 /**************************************************************************************************
 * Variablen
 **************************************************************************************************/
@@ -68,7 +58,7 @@ function showRAMUsage() {
 
     var m = process.memory();
     var pc = Math.round(m.usage*100/m.total);
-    buf.drawString(pc+"%", Center.x + 5, Center.y - 40, true);
+    g.drawString(pc+"%", Center.x + 5, Center.y - 40, true);
 }
 
 //*************************************************************************************************
@@ -127,7 +117,7 @@ function setLineWidth(x1, y1, x2, y2, lw) {
 /// \return         -
 //*************************************************************************************************
 function drawMixedClock(force) {
-  if ((force || Bangle.isLCDOn()) && buf.buffer) {
+  if ((force || Bangle.isLCDOn())/* && buf.buffer*/) {
     var date = new Date();
     var dateArray = date.toString().split(" ");
     var isEn = locale.name.startsWith("en");
@@ -136,77 +126,74 @@ function drawMixedClock(force) {
     var second = date.getSeconds();
     var minute = date.getMinutes();
     var hour = date.getHours();
-    var radius;
+    //var radius;
 
     g.reset();
-    buf.clear();
+    g.clear();
 
-    buf.setColor(CLOCK);
+    g.setColor(CLOCK);
     // draw date
-    buf.setFont("7x11Numeric7Seg", 2);
-    buf.setFontAlign(0, 0);
-    buf.drawString((dateArray[2]), Center.x + Radius.dots - 25, Center.y, true);
+    g.setFont("7x11Numeric7Seg", 2);
+    g.setFontAlign(1, 0, 0);
+    g.drawString((dateArray[2]), Center.x + Radius.dots - 20, Center.y, true);
+    g.setFontAlign(0, 0, 0);
 
     // draw hour and minute dots
     for (i = 1; i < 61; i++) {
-        if ((i % 5 == 0) && (i != 15))
+        if (i % 5 == 0)
         { //Punkte
           point = rotatePoint(0, Radius.dots -3, i * 6);
-          buf.fillCircle(point[0], point[1], 2);
-          buf.setFont("7x11Numeric7Seg", 2);
+          g.fillCircle(point[0], point[1], 2);
+          g.setFont("7x11Numeric7Seg", 2);
           point = rotatePoint(0, Radius.dots - 20, i * 6);
-          buf.drawString(i/5 , point[0], point[1], true);
+          if (i != 15)
+            g.drawString(i/5 , point[0], point[1], true);
         }
         else
         {
           //Linien
           point = rotatePoint(0, Radius.dots, i * 6);
           start = rotatePoint(0, Radius.dots - 4, i * 6);
-          buf.drawLine(start[0], start[1], point[0], point[1]);
-          buf.fillPoly(setLineWidth(start[0], start[1], point[0], point[1], 1));
+          g.drawLine(start[0], start[1], point[0], point[1]);
+          g.fillPoly(setLineWidth(start[0], start[1], point[0], point[1], 1));
         }
-    }
-
-    // draw digital time
-    if(settings.cSize > 0)
-    {
-      buf.setFont("7x11Numeric7Seg", settings.cSize + 1);
-      buf.setFontAlign(0, 0);
-      buf.drawString(dateArray[4], Center.x, Center.y + Radius.dots/3, true);
     }
 
     // draw new second hand
     point = rotatePoint(0, Radius.sec, second * 6);
-    buf.drawLine(Center.x, Center.y, point[0], point[1]);
-    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
+    g.drawLine(Center.x, Center.y, point[0], point[1]);
+    g.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
     // draw backside for second hand
     point = rotatePoint(0, -Radius.sec / 3, second * 6);
-    buf.drawLine(Center.x, Center.y, point[0], point[1]);
-    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
+    g.drawLine(Center.x, Center.y, point[0], point[1]);
+    g.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.second));
     // draw new minute hand
     point = rotatePoint(0, Radius.min, minute * 6);
-    buf.drawLine(Center.x, Center.y, point[0], point[1]);
-    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.minute));
+    g.drawLine(Center.x, Center.y, point[0], point[1]);
+    g.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.minute));
     // draw new hour hand
     point = rotatePoint(0, Radius.hour, hour % 12 * 30 + date.getMinutes() / 2 | 0);
-    buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.hour));
+    g.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.hour));
     // draw center
-    buf.fillCircle(Center.x, Center.y, Radius.center);
+    g.fillCircle(Center.x, Center.y, Radius.center);
 
     if(settings.cShowRAM == true)
     {
-      buf.setFont("6x8", 2);
+      g.setFont("6x8", 2);
       showRAMUsage();
-      buf.setFont("7x11Numeric7Seg", 1);
+      g.setFont("7x11Numeric7Seg", 1);
     }
-    g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer}, 0, 38 - settings.cDiameter);
+    //g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer}, 0, 38 - settings.cDiameter);
 
-    /*g.setColor(0x0F00);
+    g.setColor(0x0F00);
+    // Y - Mittelpunkt der Uhr, mit 24px oben für Widget
     g.drawLine(1, 120 + settings.cDiameter - 2, 240, 120 + settings.cDiameter- 2);
     g.drawLine(120, 1, 120, 240);
     g.setColor(0xF000);
+    // Y - Mittelpunkt Display
     g.drawLine(1, 120, 240, 120);
-    g.drawLine(1, 24, 238, 24);*/
+    // WidgetGrenze
+    g.drawLine(1, 24, 238, 24);
   }
 }
 
@@ -242,5 +229,5 @@ drawMixedClock(); // immediately draw
 setInterval(drawMixedClock, 500); // update twice a second
 
 // Show launcher when middle button pressed after freeing memory first
-setWatch(() => {delete buf.buffer; Bangle.showLauncher()}, BTN2, {repeat:false,edge:"falling"});
+setWatch(() => {Bangle.showLauncher()}, BTN2, {repeat:false,edge:"falling"});
 
