@@ -2494,5 +2494,18 @@
     {"name":"HRV.app.js","url":"app.js"},
     {"name":"HRV.img","url":"app-icon.js","evaluate":true}
   ]
+},
+{ "id": "aviator",
+  "name": "Naval Aviator",
+  "icon": "aviator.png",
+  "version":"0.04",
+  "description": "Inspired from Naval Aviator Clocks",
+  "tags": "clock",
+  "type":"clock",
+  "allow_emulator":true,
+  "storage": [
+    {"name":"aviator.app.js","url":"aviator.js"},
+    {"name":"aviator.img","url":"aviator-icon.js","evaluate":true}
+  ]
 }
 ]
