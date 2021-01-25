@@ -43,6 +43,13 @@ function getPosition(index){
   return (index*HALF);
 }
 
+function showRAMUsage() {
+
+    var m = process.memory();
+    var pc = Math.round(m.usage*100/m.total);
+    g.drawString("RAM "+pc+"%", 10, y+=h, true);
+}
+
 function getApps(){
   var isEn = locale.name.startsWith("en");
   var label = isEn?("Exit"):"Beenden";
@@ -52,7 +59,8 @@ function getApps(){
       + "      " + label + "\n\n\n  Version   :" + ENV.VERSION
       + "\n  Bootloader:" + getVersion("boot.info")
       + "\n  Launcher  :" + getVersion("toucher.info")
-      + "\n  Settings  :" + getVersion("setting.info"),
+      + "\n  Settings  :" + getVersion("setting.info")
+      + "\n  RAM       :" + showRAMUsage(),
     special: true
   };
   const raw_apps = Storage.list(/\.info$/).filter(app => app.endsWith('.info')).map(app => Storage.readJSON(app,1) || { name: "DEAD: "+app.substr(1) })

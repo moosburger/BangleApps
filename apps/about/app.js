@@ -21,7 +21,14 @@ function getLauncher(name,file) {
   var v = ("object"==typeof j)?j.version:false;
   v?(getVersion(name,file)) : '';
 }
+function showRAMUsage() {
+
+    var m = process.memory();
+    var pc = Math.round(m.usage*100/m.total);
+    g.drawString("RAM "+pc+"%", 10, y+=h, true);
+}
 getVersion ("Bootloader","boot.info");
 getLauncher("Launcher  ","launch.info");
 getLauncher("Toucher   ","toucher.info");
 getVersion ("Settings  ","setting.info");
+showRAMUsage();
