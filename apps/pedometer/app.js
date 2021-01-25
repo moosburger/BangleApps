@@ -7,7 +7,7 @@
     .5)-1,a.gety(0));return a}});
 
   const storage = require("Storage");
-  const SETTINGS_FILE = 'activepedom.settings.json';
+  const SETTINGS_FILE = 'pedometer.settings.json';
   var history = 86400000; // 28800000=8h 43200000=12h //86400000=24h
 
   //return setting
@@ -78,7 +78,7 @@
     now = new Date();
     month = now.getMonth() + 1;
     if (month < 10) month = "0" + month;
-    filename = filename = "activepedom" + now.getFullYear() + month + now.getDate() + ".data";
+    filename = filename = "pedometer" + now.getFullYear() + month + now.getDate() + ".data";
     var csvFile = storage.open(filename, "r");
     times = getArrayFromCSV(csvFile, 0);
     first = getDate(times[0]) + " " + getTime(times[0]); //first entry in datafile

@@ -21,8 +21,8 @@
   var distance = 0; //distance travelled
 
   const s = require('Storage');
-  const SETTINGS_FILE = 'activepedom.settings.json';
-  const PEDOMFILE = "activepedom.steps.json";
+  const SETTINGS_FILE = 'pedometer.settings.json';
+  const PEDOMFILE = "pedometer.steps.json";
   var dataFile;
   var storeDataInterval = 5*60*1000; //ms
   
@@ -36,7 +36,7 @@
     now = new Date();
     month = now.getMonth() + 1; //month is 0-based
     if (month < 10) month = "0" + month; //leading 0
-    filename = filename = "activepedom" + now.getFullYear() + month + now.getDate() + ".data"; //new file for each day
+    filename = filename = "pedometer" + now.getFullYear() + month + now.getDate() + ".data"; //new file for each day
     dataFile = s.open(filename,"a");
     if (dataFile) { //check if filen already exists
       if (dataFile.getLength() == 0) {
@@ -98,7 +98,7 @@
   function resetActive() {
     active = 0;
     steps = 0;
-    if (Bangle.isLCDOn()) WIDGETS["activepedom"].draw();
+    if (Bangle.isLCDOn()) WIDGETS["pedometer"].draw();
   }
 
   function calcSteps() {
@@ -196,12 +196,12 @@
   Bangle.on('step', (up) => {
     steps++; //increase step count
     calcSteps();
-    if (Bangle.isLCDOn()) WIDGETS["activepedom"].draw();
+    if (Bangle.isLCDOn()) WIDGETS["pedometer"].draw();
   });
 
   // redraw when the LCD turns on
   Bangle.on('lcdPower', function(on) {
-    if (on) WIDGETS["activepedom"].draw();
+    if (on) WIDGETS["pedometer"].draw();
   });
 
   //Read data from file and set variables
@@ -218,5 +218,5 @@
   setStepSensitivity(setting('stepSensitivity')); //set step sensitivity (80 is standard, 400 is muss less sensitive)
   timerStoreData = setInterval(storeData, storeDataInterval); //store data regularly
   //Add widget
-  WIDGETS["activepedom"]={area:"tl",width:width,draw:draw};
+  WIDGETS["pedometer"]={area:"tl",width:width,draw:draw};
 })();

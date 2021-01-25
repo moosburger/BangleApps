@@ -3,7 +3,7 @@
  * @param {function} back Use back() to return to settings menu
  */
 (function(back) {
-  const SETTINGS_FILE = 'activepedom.settings.json';
+  const SETTINGS_FILE = 'pedometer.settings.json';
   const LINES = ['Steps', 'Distance'];
 
   // initialize with default settings...
@@ -29,7 +29,6 @@
     return function (value) {
       s[key] = value;
       storage.write(SETTINGS_FILE, s);
-      //WIDGETS["activepedom"].draw();
     };
   }
 
