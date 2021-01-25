@@ -30,5 +30,6 @@ function showRAMUsage() {
 getVersion ("Bootloader","boot.info");
 getLauncher("Launcher  ","launch.info");
 getLauncher("Toucher   ","toucher.info");
+getLauncher("DtLaunch  ","dtlaunch.info");
 getVersion ("Settings  ","setting.info");
 showRAMUsage();
