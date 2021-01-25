@@ -26,7 +26,6 @@ require("Font7x11Numeric7Seg").add(Graphics);
 * Defines
 * jshint esversion: 6
 **************************************************************************************************/
-const cShowRAM = true;
 const cDiameter = 14;
 const Radius = { "center": 6, "hour": 60 + 14, "min": 80 + cDiameter, "sec" : 85 + cDiameter, "dots": 93 + cDiameter };
 const Center = { "x": 120, "y": 108};
@@ -166,13 +165,7 @@ function drawMixedClock(force) {
     buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.hour));
     // draw center
     buf.fillCircle(Center.x, Center.y, Radius.center);
-
-    if(cShowRAM == true)
-    {
-      buf.setFont("6x8", 2);
-      showRAMUsage();
-      buf.setFont("7x11Numeric7Seg", 1);
-    }
+    
     g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer}, 0, 38 - cDiameter);
   }
 }
