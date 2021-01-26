@@ -117,10 +117,6 @@ const onMinute = () => {
     Bangle.buzz();
   }
   drawDate();
-
-  var m = process.memory();
-  var pc = Math.round(m.usage*100/m.total);
-  g.drawString(pc+"%", 125, 80, true);
 };
 
 const startTimers = () => {

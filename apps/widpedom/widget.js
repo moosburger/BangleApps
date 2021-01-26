@@ -1,6 +1,4 @@
 (() => {
-  require("Font7x11Numeric7Seg").add(Graphics);
-  require("Font6x12").add(Graphics);
   const PEDOMFILE = "wpedom.json"
   const DEFAULTS = {
     'goal': 10000,
@@ -64,9 +62,11 @@
     g.clearRect(this.x, this.y, this.x + width, this.y + 23); // erase background
     if (setting('progress')){ drawProgress.call(this, stps); }
     g.setColor(COLORS.white);
-      g.setFont("7x11Numeric7Seg", 1);
     if (stps.length > 3){
       stps = stps.slice(0,-3) + "," + stps.slice(-3);
+      g.setFont("4x6", 1); // if big, shrink text to fix
+    } else {
+      g.setFont("6x8", 1);
     }
     g.setFontAlign(0, 0); // align to x: center, y: center
     g.drawString(stps, this.x+width/2, this.y+19);
@@ -87,7 +87,6 @@
       stp_today = 1;
     }
     if (stp_today === setting('goal')) {
-      g.setColor(COLORS.green);
       let b = 3, buzz = () => {
         if (b--) Bangle.buzz().then(() => setTimeout(buzz, 100))
       }
