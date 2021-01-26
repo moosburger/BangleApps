@@ -29,7 +29,6 @@ require("Font7x11Numeric7Seg").add(Graphics);
 const cDiameter = 14;
 const Radius = { "center": 6, "hour": 60 + 14, "min": 80 + cDiameter, "sec" : 85 + cDiameter, "dots": 93 + cDiameter };
 const Center = { "x": 120, "y": 108};
-//const Center = { "x": 120, "y": 96 };
 const Widths = { hour: 2, minute: 2, second: 1 };
 var buf = Graphics.createArrayBuffer(240,216,1,{msb:true});
 
@@ -142,7 +141,7 @@ function drawMixedClock(force) {
         {
           //Linien
           point = rotatePoint(0, Radius.dots, i * 6);
-          start = rotatePoint(0, Radius.dots - 4, i * 6);
+          start = rotatePoint(0, Radius.dots - 6, i * 6);
           buf.drawLine(start[0], start[1], point[0], point[1]);
           buf.fillPoly(setLineWidth(start[0], start[1], point[0], point[1], 1));
         }
@@ -182,14 +181,14 @@ Bangle.on('lcdPower', function(on) {
     Bangle.drawWidgets();
   }
 });
-Bangle.on('faceUp',function(up){
+/*Bangle.on('faceUp',function(up){
   if (up && !Bangle.isLCDOn()) {
     drawMixedClock(true);
   }
 });
 Bangle.on('touch', function(button) {
   Bangle.showLauncher();
-});
+});*/
 
 //*************************************************************************************************
 // FunktionsName:

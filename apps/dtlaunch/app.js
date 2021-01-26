@@ -49,8 +49,12 @@ Bangle.on("swipe",(dir)=>{
         drawPage(page);
     } else {
         --page; if (page<0) page=maxPage;
-        drawPage(page);
-    }  
+       drawPage(page);
+    }
+});
+
+Bangle.on('touch', function(button) {
+  load(apps[page*6+selected].src);
 });
 
 function nextapp(d){
