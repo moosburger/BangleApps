@@ -164,7 +164,7 @@ function drawMixedClock(force) {
     buf.fillPoly(setLineWidth(Center.x, Center.y, point[0], point[1], Widths.hour));
     // draw center
     buf.fillCircle(Center.x, Center.y, Radius.center);
-    
+
     g.drawImage({width:buf.getWidth(),height:buf.getHeight(),bpp:1,buffer:buf.buffer}, 0, 38 - cDiameter);
   }
 }
@@ -205,5 +205,5 @@ drawMixedClock(); // immediately draw
 setInterval(drawMixedClock, 500); // update twice a second
 
 // Show launcher when middle button pressed after freeing memory first
-setWatch(() => {delete buf.buffer; Bangle.showLauncher()}, BTN2, {repeat:false,edge:"falling"});
+setWatch(() => {delete buf.buffer; Bangle.showLauncher()}, BTN1, {repeat:false,edge:"falling"});
 

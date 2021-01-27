@@ -33,6 +33,7 @@
 
   E.showMenu({
     '': { 'title': 'Toucher settings' },
+    '< Back': back
     "Resolution" : {
       value : settings.highres,
       format : v => v?"High":"Low",
@@ -60,6 +61,5 @@
       format : v => v?"On":"Off",
       onchange : saveChange('debug')
     },
-    '< Back': back
   });
 });
