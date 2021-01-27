@@ -2639,7 +2639,7 @@
   { "id": "pedometer",
     "name": "Pedometer",
     "icon": "app.png",
-    "version":"0.04",
+    "version":"0.05",
     "description": "Modified Active Pedometer",
     "tags": "widget",
     "type":"widget",

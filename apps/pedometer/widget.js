@@ -83,8 +83,6 @@
   }
 
   function draw() {
-    steps = 9999;
-    calcSteps();
     var height = 23; //width is defined globaly
 
     //Check if same day
