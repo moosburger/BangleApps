@@ -15,7 +15,7 @@
   var currentSteps = 0, lastSentSteps=0;
   var activityInterval;
   var hrmTimeout;
-  
+
   function settings() {
     let settings = require('Storage').readJSON("gbridge.json", true) || {};
     if (!("showIcon" in settings)) {
@@ -129,7 +129,7 @@
   }
 
   function handleCallEvent(event) {
-    if (event.cmd === "accept") {
+    /*if (event.cmd === "accept")*/ {
       require("notify").show({
         size: 55, title: event.name, id: "call",
         body: event.number, icon:require("heatshrink").decompress(atob("jEYwIMJj4CCwACJh4CCCIMOAQMGAQMHAQMDAQMBCIMB4PwgHz/EAn4CBj4CBg4CBgACCAAw="))});
@@ -148,7 +148,7 @@
         setTimeout(_=>Bangle.beep(), 1000);
       },2000);
   }
-  
+
   function handleActivityEvent(event) {
     var s = settings();
     // handle setting activity interval
@@ -251,7 +251,7 @@
   function sendBattery() {
     gbSend({ t: "status", bat: E.getBattery() });
   }
-  
+
   // Send a summary of activity to Gadgetbridge
   function sendActivity(hrm) {
     var steps = currentSteps - lastSentSteps;
@@ -279,7 +279,7 @@
     }
   });
   handleActivityEvent({}); // kicks off activity reporting
-  
+
   // Finally add widget
   WIDGETS["gbridgew"] = {area: "tl", width: 24, draw: draw, reload: reload};
   reload();
