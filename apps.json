@@ -53,8 +53,8 @@
   { "id": "about",
     "name": "About",
     "icon": "app.png",
-    "version":"0.06",
-    "description": "Bangle.js About page - showing software version, stats, and a collaborative mural from the Bangle.js KickStarter backers",
+    "version":"0.07",
+    "description": "Bangle.js About page - showing software version, stats",
     "tags": "tool,system",
     "allow_emulator":true,
     "storage": [
