@@ -16,7 +16,7 @@ function getVersion(name,file) {
   var v = ("object"==typeof j)?j.version:false;
   //g.drawString(v?(name+" "+(v?"v"+v:"Unknown")):"NO "+name,0,y+=h);
   y += (v? h:0);
-  g.drawString(v?(name+": "+(v?"v"+v:"Unknown")):'',90,y);
+  g.drawString(v?(name+": "+(v?"v"+v:"Unknown")):'',110,y);
 }
 y+=h;
 g.setFontAlign(1,0);
