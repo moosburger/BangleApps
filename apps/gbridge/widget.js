@@ -11,10 +11,16 @@
 
     scrollPos: 0
   };
+  const cMaxTime = 1100;
+  const cMinTime = 240;
   // activity reporting
   var currentSteps = 0, lastSentSteps=0;
   var activityInterval;
   var hrmTimeout;
+  
+  var stepTimeDiff = 9999; //Time difference between two steps
+  var startTimeStep = new Date(); //set start time
+  var stopTimeStep = 0; //Time after one step
 
   function settings() {
     let settings = require('Storage').readJSON("gbridge.json", true) || {};
@@ -45,9 +51,8 @@
   }
   function handleNotificationEvent(event) {
     if (event.t === "notify") {
-      event.src += "_____";
       require("notify").show(prettifyNotificationEvent(event));
-      Bangle.buzz();
+      Bangle.buzz(200);
     } else { // notify-
       require("notify").hide(event);
     }
@@ -96,7 +101,6 @@
               g.setFontAlign(0, 1).setFont("6x8", bSize).drawString(state.musicInfo.album, x+w/2, a.y+h);
             }
 /*          } else {
-            Terminal.println(a.h);
             // regular size:
             // [icon] <artist>
             // [    ] <title>
@@ -142,7 +146,7 @@
         require("notify").show({
         size: 55, title: event.name, id: "call",
         body: event.number, icon:require("heatshrink").decompress(atob("jEYwIMJj4CCwACJh4CCCIMOAQMGAQMHAQMDAQMBCIMB4PwgHz/EAn4CBj4CBg4CBgACCAAw="))});
-        Bangle.buzz(500);
+        Bangle.buzz(300);
         break;
       case "accept":
       case "outgoing":
@@ -161,7 +165,7 @@
     }
     if (event.n)
       state.find = setInterval(_=>{
-        Bangle.buzz();
+        Bangle.buzz(200);
         setTimeout(_=>Bangle.beep(), 1000);
       },2000);
   }
@@ -204,6 +208,18 @@
       }, interval*1000);
     }
   }
+  function calcSteps() {
+    stopTimeStep = new Date(); //stop time after each step
+    stepTimeDiff = stopTimeStep - startTimeStep; //time between steps in milliseconds
+    startTimeStep = new Date(); //start time again
+
+    //Remove step if time between first and second step is too long or too short
+    if ((stepTimeDiff >= cMaxTime) || (stepTimeDiff <= cMinTime))
+    { //milliseconds
+      currentSteps--;
+    }
+  }
+
 
   var _GB = global.GB;
   global.GB = (event) => {
@@ -285,6 +301,7 @@
     if (!lastSentSteps)
       lastSentSteps = s-1;
     currentSteps = s;
+    calcSteps();
   });
   Bangle.on('HRM',function(hrm) {
     var ok = hrm.confidence>80;
