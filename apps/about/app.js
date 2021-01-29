@@ -14,29 +14,18 @@ function getVersion(name,file) {
   var j = s.readJSON(file,1);
   var v = ("object"==typeof j)?j.version:false;
   //g.drawString(v?(name+" "+(v?"v"+v:"Unknown")):"NO "+name,0,y+=h);
-  g.drawString(v?(name+" "+(v?"v"+v:"Unknown")):'', y+=h);
+  g.drawString(v?(name+" "+(v?"v"+v:"Unknown")):'',0,y+=h);
 }
-function showRAMUsage() {
-    var m = process.memory();
-    var pc = Math.round(m.usage*100/m.total);
-    g.setFontAlign(-1,-1);
-    g.drawString("RAM usage "+pc+"%", 0, y+=h+10, true);
-    g.drawString("RAM total "+m.total, 0, y+=h, true);
-    g.drawString("RAM usage "+m.usage, 0, y+=h, true);
-}
-
 getVersion("Bootloader","boot.info");
 getVersion("Launcher","launch.info");
 getVersion("Launcher","toucher.info");
 getVersion("Launcher","dtlaunch.info");
 getVersion("Settings","setting.info");
-
 y+=h;
 g.drawString(MEM.total+" JS Variables available",0,y+=h);
 g.drawString("Storage: "+(require("Storage").getFree()>>10)+"k free",0,y+=h);
 if (ENV.STORAGE) g.drawString("         "+(ENV.STORAGE>>10)+"k total",0,y+=h);
 if (ENV.SPIFLASH) g.drawString("SPI Flash: "+(ENV.SPIFLASH>>10)+"k",0,y+=h);
 g.setFontAlign(0,-1);
-//g.drawString(NRF.getAddress(),120,232);
-showRAMUsage();
+g.drawString(NRF.getAddress(),120,232);
 g.flip();
