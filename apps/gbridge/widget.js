@@ -45,6 +45,7 @@
   }
   function handleNotificationEvent(event) {
     if (event.t === "notify") {
+      event.src += "_____";
       require("notify").show(prettifyNotificationEvent(event));
       Bangle.buzz();
     } else { // notify-
@@ -55,9 +56,9 @@
   function updateMusic(options){
     if (state.music === "play") {
       require("notify").show(Object.assign({
-        size:40, id:"music",
+        size:120, id:"music",
         render:a => {
-          if (a.h>200) {
+          //if (a.h>119) {
             // large:
             //    [icon]
             //    [    ]
@@ -72,10 +73,10 @@
             const fitFont = (prop,max) => {
               if (!(prop in state.musicInfo)) return max;
               let size = Math.floor(w/(state.musicInfo[prop].length*6));
-              if (size<1) {size=1}
-              if (size>max) {size=max}
+              if (size<1) {size=1;}
+              if (size>max) {size=max;}
               return size;
-            }
+            };
             let aSize = fitFont('artist',3);
             // TODO: split long title over multiple lines instead
             let tSize = fitFont('track',2);
@@ -94,7 +95,8 @@
               // note: using a.y rather than y
               g.setFontAlign(0, 1).setFont("6x8", bSize).drawString(state.musicInfo.album, x+w/2, a.y+h);
             }
-          } else {
+/*          } else {
+            Terminal.println(a.h);
             // regular size:
             // [icon] <artist>
             // [    ] <title>
@@ -108,8 +110,9 @@
             g.setFontAlign(-1, -1);
             x += iconSize+16;
             g.setFont("4x6", 2).drawString(state.musicInfo.artist, x, y+8);
-            g.setFont("6x8", 1).drawString(state.musicInfo.track, x, y+22);
-          }
+            g.setFont("6x8", 1).drawString(state.musicInfo.album, x, y+22);
+            g.setFont("6x8", 1).drawString(state.musicInfo.track, x, y+32);
+          }*/
         }}, options));
     }
 
@@ -119,7 +122,7 @@
   }
   function handleMusicStateUpdate(event) {
     if (state.music !== event.state) {
-      state.music = event.state
+      state.music = event.state;
       updateMusic({on: true});
     }
   }
@@ -129,11 +132,25 @@
   }
 
   function handleCallEvent(event) {
-    /*if (event.cmd === "accept")*/ {
-      require("notify").show({
+    if ((!event.cmd) && ((event.name)||(event.number)))
+      event.cmd = "incoming";
+    else
+      event.cmd = "end";
+
+    switch (event.cmd) {
+      case "incoming":
+        require("notify").show({
         size: 55, title: event.name, id: "call",
         body: event.number, icon:require("heatshrink").decompress(atob("jEYwIMJj4CCwACJh4CCCIMOAQMGAQMHAQMDAQMBCIMB4PwgHz/EAn4CBj4CBg4CBgACCAAw="))});
-      Bangle.buzz();
+        Bangle.buzz(500);
+        break;
+      case "accept":
+      case "outgoing":
+      case "reject":
+      case "start":
+      case "end":
+        require("notify").hide(event);
+        break;
     }
   }
 
@@ -216,7 +233,7 @@
 
   Bangle.on("swipe", (dir) => {
     if (state.music === "play") {
-      const command = dir > 0 ? "next" : "previous"
+      const command = dir > 0 ? "next" : "previous";
       gbSend({ t: "music", n: command });
     }
   });
@@ -230,7 +247,7 @@
   }
 
   function changedConnectionState() {
-    WIDGETS["gbridgew"].draw();
+    WIDGETS.gbridgew.draw();
     g.flip(); // turns screen on
   }
 
@@ -238,13 +255,13 @@
     NRF.removeListener("connect", changedConnectionState);
     NRF.removeListener("disconnect", changedConnectionState);
     if (settings().showIcon) {
-      WIDGETS["gbridgew"].width = 24;
-      WIDGETS["gbridgew"].draw = draw;
+      WIDGETS.gbridgew.width = 24;
+      WIDGETS.gbridgew.draw = draw;
       NRF.on("connect", changedConnectionState);
       NRF.on("disconnect", changedConnectionState);
     } else {
-      WIDGETS["gbridgew"].width = 0;
-      WIDGETS["gbridgew"].draw = ()=>{};
+      WIDGETS.gbridgew.width = 0;
+      WIDGETS.gbridgew.draw = ()=>{};
     }
   }
 
@@ -281,6 +298,6 @@
   handleActivityEvent({}); // kicks off activity reporting
 
   // Finally add widget
-  WIDGETS["gbridgew"] = {area: "tl", width: 24, draw: draw, reload: reload};
+  WIDGETS.gbridgew = {area: "tl", width: 24, draw: draw, reload: reload};
   reload();
 })();
