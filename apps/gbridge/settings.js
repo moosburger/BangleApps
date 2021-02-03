@@ -1,39 +1,39 @@
 (function(back) {
-  const SETTINGS_FILE = 'gbridge.json'
-
   function gb(j) {
     Bluetooth.println(JSON.stringify(j));
   }
-  let settings = {
-    'showIcon' : true,
-    'hrm' : true
-  };
-  const storage = require('Storage')
-  const saved = storage.readJSON(SETTINGS_FILE, 1) || {}
-  for (const key in saved) {
-    settings[key] = saved[key];
+  function settings() {
+    let settings = require('Storage').readJSON("gbridge.json", true) || {
+        showIcon : true,
+        hrm : true
+    };
+    return settings;
   }
-  function updateSetting(key) {
-    return function (value) {
-      settings[key] = value;
-      storage.write(SETTINGS_FILE, settings);
-    WIDGETS["gbridgew"].reload();
-    }
+  function updateSetting(setting, value) {
+    let settings = require('Storage').readJSON("gbridge.json", true) || {};
+    settings[setting] = value;
+    require('Storage').writeJSON('gbridge.json', settings);
   }
-  const onOffFormat = b => (b ? 'Yes' : 'No')
-  const mainmenu = {
+  function setIcon(visible) {
+    updateSetting('showIcon', visible);
+    // need to re-layout widgets
+    WIDGETS.gbridgew.reload();
+    g.clear();
+    Bangle.drawWidgets();
+  }
+  var mainmenu = {
     "" : { "title" : "Gadgetbridge" },
     "< Back" : back,
     "Connected" : { value : NRF.getSecurityStatus().connected?"Yes":"No" },
     "Show Icon" : {
-      value: settings.showIcon,
-      format: onOffFormat,
-      onchange: updateSetting('showIcon'),
+      value: settings().showIcon,
+      format: v => v?"Yes":"No",
+      onchange: setIcon
     },
     "Record HRM" : {
-      value: settings.hrm,
-      format: onOffFormat,
-      onchange: v => updateSetting('hrm'),
+      value: settings().hrm,
+      format: v => v?"Yes":"No",
+      onchange: v => updateSetting('hrm', v)
     },
     "Find Phone" : function() { E.showMenu(findPhone); },
   };
@@ -44,4 +44,4 @@
     "< Back" : function() { E.showMenu(mainmenu); },
   };
   E.showMenu(mainmenu);
-})
+});
