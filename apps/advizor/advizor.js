@@ -68,6 +68,7 @@ const resetSeconds = () => {
   for (let i = 0; i <= secCnt; i++) {
     seconds((360 * i) / secCnt);
   }
+  Bangle.drawWidgets();
 };
 
 const onSecond = () => {
@@ -81,7 +82,6 @@ const onSecond = () => {
   var col = g.getColor();
   drawDigit();
   g.setColor(col);
-  Bangle.drawWidgets();
 };
 
 const startTimers = () => {
