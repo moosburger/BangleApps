@@ -17,7 +17,7 @@
   var currentSteps = 0, lastSentSteps=0;
   var activityInterval;
   var hrmTimeout;
-  
+
   var stepTimeDiff = 9999; //Time difference between two steps
   var startTimeStep = new Date(); //set start time
   var stopTimeStep = 0; //Time after one step
@@ -136,10 +136,15 @@
   }
 
   function handleCallEvent(event) {
-    if ((!event.cmd) && ((event.name)||(event.number)))
+    //console.log("Cmd: " + event.cmd);
+    //console.log("Name: " + event.name);
+    //console.log("Number " + event.number);
+
+    if ((event.cmd === "") && ((event.name)||(event.number))){
+      event.cmd = "incoming";}
+    else if ((event.cmd === "") && (!event.name) && (!event.number)){
       event.cmd = "incoming";
-    else
-      event.cmd = "end";
+      event.name = "VoIP App";}
 
     switch (event.cmd) {
       case "incoming":
@@ -208,7 +213,7 @@
       }, interval*1000);
     }
   }
-  function calcSteps() {
+  /*function calcSteps() {
     stopTimeStep = new Date(); //stop time after each step
     stepTimeDiff = stopTimeStep - startTimeStep; //time between steps in milliseconds
     startTimeStep = new Date(); //start time again
@@ -218,8 +223,7 @@
     { //milliseconds
       currentSteps--;
     }
-  }
-
+  }*/
 
   var _GB = global.GB;
   global.GB = (event) => {
@@ -301,7 +305,7 @@
     if (!lastSentSteps)
       lastSentSteps = s-1;
     currentSteps = s;
-    calcSteps();
+    //calcSteps();
   });
   Bangle.on('HRM',function(hrm) {
     var ok = hrm.confidence>80;

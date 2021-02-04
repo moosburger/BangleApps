@@ -5,15 +5,14 @@ const Storage = require("Storage");
 const filename = 'toucher.json';
 var locale = require("locale");
 let settings = Storage.readJSON(filename,1) || {
-  hightres: true,
+  highres: true,
   animation : true,
   frame : 3,
   toppos : 6,
   debug: false
 };
 
-if(!settings.highres) Bangle.setLCDMode("80x80");
-else Bangle.setLCDMode();
+Bangle.setLCDMode(settings.highres ? "direct" : "80x80");
 
 g.clear();
 g.flip();
@@ -44,10 +43,9 @@ function getPosition(index){
 }
 
 function showRAMUsage() {
-
     var m = process.memory();
     var pc = Math.round(m.usage*100/m.total);
-    g.drawString("RAM "+pc+"%", 10, y+=h, true);
+    return pc;
 }
 
 function getApps(){
@@ -59,8 +57,8 @@ function getApps(){
       + "      " + label + "\n\n\n  Version   :" + ENV.VERSION
       + "\n  Bootloader:" + getVersion("boot.info")
       + "\n  Launcher  :" + getVersion("toucher.info")
-      + "\n  Settings  :" + getVersion("setting.info")
-      + "\n  RAM       :" + showRAMUsage(),
+      + "\n  Settings  :" + getVersion("setting.info"),
+      //+ "\n  RAM       :" + showRAMUsage() + "%",
     special: true
   };
   const raw_apps = Storage.list(/\.info$/).filter(app => app.endsWith('.info')).map(app => Storage.readJSON(app,1) || { name: "DEAD: "+app.substr(1) })
