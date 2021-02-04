@@ -81,6 +81,7 @@ const onSecond = () => {
   var col = g.getColor();
   drawDigit();
   g.setColor(col);
+  Bangle.drawWidgets();
 };
 
 const startTimers = () => {
