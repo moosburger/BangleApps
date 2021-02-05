@@ -3,10 +3,13 @@
     Bluetooth.println(JSON.stringify(j));
   }
   function settings() {
-    let settings = require('Storage').readJSON("gbridge.json", true) || {
-        showIcon : true,
-        hrm : true
-    };
+    let settings = require('Storage').readJSON("gbridge.json", true) || {};
+    if (!("showIcon" in settings)) {
+      settings.showIcon = true;
+    }
+    if (!("hrm" in settings)) {
+      settings.hrm = true;
+    }
     return settings;
   }
   function updateSetting(setting, value) {
