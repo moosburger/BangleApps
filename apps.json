@@ -2651,7 +2651,7 @@
   { "id": "advizor",
     "name": "Advizor",
     "icon": "advizor.png",
-    "version":"0.03",
+    "version":"0.04",
     "description": "Inspired from Suunto Advizor",
     "tags": "clock",
     "type":"clock",
