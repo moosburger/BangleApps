@@ -124,8 +124,8 @@ function drawMixedClock(force) {
     buf.setColor(-1);
     // draw date
     buf.setFont("7x11Numeric7Seg", 2);
-    buf.setFontAlign(0, 0);
-    buf.drawString((dateArray), Center.x + Radius.dots - 30, Center.y, true);
+    buf.setFontAlign(-1, 0);
+    buf.drawString((dateArray), Center.x + Radius.dots - 33, Center.y, true);
 
     // draw hour and minute dots
     for (i = 1; i < 61; i++) {
