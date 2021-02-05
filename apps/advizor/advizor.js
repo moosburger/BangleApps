@@ -37,7 +37,7 @@ function drawDigit(currentDate) {
   g.setFont("7x11Numeric7Seg",5);
   g.setFontAlign(1,1); // align right bottom
   g.drawString(h, 110, 160, true);
-  g.drawString(m, 200, 160, true);
+  g.drawString(m, 204, 160, true);
 
   var col = secToggle ? (0):(-1);
   secToggle = !secToggle;
