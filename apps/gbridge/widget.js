@@ -310,12 +310,12 @@
     readPedomSteps(s);
   });
   Bangle.on('HRM',function(hrm) {
-    var ok = hrm.confidence>90;
+    var ok = hrm.confidence>80;
     if (hrmTimeout!==undefined) hrmTimeout--;
     if (ok || hrmTimeout<=0) {
       if (hrmTimeout!==undefined)
         Bangle.setHRMPower(0);
-      sendActivity(hrm.confidence>70 ? hrm.bpm : -1);
+      sendActivity(hrm.confidence>50 ? hrm.bpm : -1);
     }
   });
   handleActivityEvent({}); // kicks off activity reporting
