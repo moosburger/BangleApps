@@ -15,14 +15,21 @@ const X = 180, Y = 140;
 let secToggle = true;
 let minToggle = true;
 let circColor = -1;
+let currentHRM = 0;
 
 const seconds = (angle) => {
   const a = angle * pRad;
   const x = centerX + Math.sin(a) * faceWidth;
   const y = centerY - Math.cos(a) * faceWidth;
+  let radius = 0;
 
-  // if 15 degrees, make hour marker larger
-  const radius = (angle % 15) ? 2 : 4;
+  if (g.getColor() == 0){
+    // if 15 degrees, make hour marker larger
+    radius = (angle % 15) ? 3 : 5;}
+  else{
+    // if 15 degrees, make hour marker larger
+    radius = (angle % 15) ? 2 : 4;}
+
   g.fillCircle(x, y, radius);
 };
 
@@ -35,7 +42,7 @@ function drawDigit(currentDate) {
   g.setColor(1, 1, 1);
   //g.reset();
   g.setFont("7x11Numeric7Seg",5);
-  g.setFontAlign(1,1); // align right bottom
+  g.setFontAlign(1,1); // align right top
   g.drawString(h, 110, 160, true);
   g.drawString(m, 204, 160, true);
 
@@ -49,17 +56,26 @@ function drawDigit(currentDate) {
   g.setFont("7x11Numeric7Seg",3);
   var D = d.getDate(); var M = d.getMonth() + 1;
   var dateStr = (" "+D).substr(-2) + "." + ("0"+M).substr(-2);
-  g.drawString(dateStr, 170, 220, true);
+  g.drawString(dateStr, 180, 215, true);
 
   // draw the Day of Week
   dateStr = daysOfWeek[d.getDay()];
   g.setFont("6x8", 3);
-  g.drawString(dateStr, 160, 80, true);
+  g.drawString(dateStr, 187, 80, true);
 
   /*g.setFont("6x8", 2);
   g.setFontAlign(0,1); // align center bottom
   dateStr = "    "+require("locale").date(d)+"    ";
   g.drawString(dateStr, g.getWidth()/2, Y+40, false);*/
+
+  g.setFontAlign(-1,1); // align right top
+  g.setFont("6x8", 2);
+  col = currentHRM ? (-1):(0);
+  g.setColor(col);
+  dateStr = ("  "+currentHRM.toString()).substr(-3);
+  g.drawString(dateStr, 0, 40, true);
+  g.drawString("bpm", 0, 60, true);
+  g.setColor(1, 1, 1);
 }
 
 const drawAll = () => {

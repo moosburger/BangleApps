@@ -213,7 +213,7 @@
       }, interval*1000);
     }
   }
-  function calcSteps() {
+  /*function calcSteps() {
     stopTimeStep = new Date(); //stop time after each step
     stepTimeDiff = stopTimeStep - startTimeStep; //time between steps in milliseconds
     startTimeStep = new Date(); //start time again
@@ -223,7 +223,7 @@
     { //milliseconds
       currentSteps--;
     }
-  }
+  }*/
 
   var _GB = global.GB;
   global.GB = (event) => {
@@ -305,15 +305,15 @@
     if (!lastSentSteps)
       lastSentSteps = s-1;
     currentSteps = s;
-    calcSteps();
+    //calcSteps();
   });
   Bangle.on('HRM',function(hrm) {
-    var ok = hrm.confidence>80;
+    var ok = hrm.confidence>90;
     if (hrmTimeout!==undefined) hrmTimeout--;
     if (ok || hrmTimeout<=0) {
       if (hrmTimeout!==undefined)
         Bangle.setHRMPower(0);
-      sendActivity(hrm.confidence>20 ? hrm.bpm : -1);
+      sendActivity(hrm.confidence>70 ? hrm.bpm : -1);
     }
   });
   handleActivityEvent({}); // kicks off activity reporting
