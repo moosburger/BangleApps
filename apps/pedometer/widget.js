@@ -51,7 +51,15 @@
   function resetActive() {
     active = 0;
     steps = 0;
-    if (Bangle.isLCDOn()) WIDGETS["pedometer"].draw();
+    if (Bangle.isLCDOn()) WIDGETS.pedometer.draw();
+  }
+
+  function saveSteps(){
+    let d = { //define array to write to file
+      lastUpdate : lastUpdate.toISOString(),
+      stepsToday : stepsCounted
+    };
+    s.write(PEDOMFILE,d); //write array to file
   }
 
   function calcSteps() {
@@ -78,6 +86,7 @@
 
     if (active == 1) {
       stepsCounted++; //count steps
+      saveSteps();
     }
     settings = 0; //reset settings to save memory
   }
@@ -118,30 +127,26 @@
 
   //This event is called just before the device shuts down for commands such as reset(), load(), save(), E.reboot() or Bangle.off()
   E.on('kill', () => {
-    let d = { //define array to write to file
-      lastUpdate : lastUpdate.toISOString(),
-      stepsToday : stepsCounted
-    };
-    s.write(PEDOMFILE,d); //write array to file
+      saveSteps();
   });
 
   //When Step is registered by firmware
   Bangle.on('step', (up) => {
     steps++; //increase step count
     calcSteps();
-    if (Bangle.isLCDOn()) WIDGETS["pedometer"].draw();
+    if (Bangle.isLCDOn()) WIDGETS.pedometer.draw();
   });
 
   // redraw when the LCD turns on
   Bangle.on('lcdPower', function(on) {
-    if (on) WIDGETS["pedometer"].draw();
+    if (on) WIDGETS.pedometer.draw();
   });
 
   //Read data from file and set variables
   let pedomData = s.readJSON(PEDOMFILE,1);
   if (pedomData) {
-    if (pedomData.lastUpdate) lastUpdate = new Date(pedomData.lastUpdate);
-    stepsCounted = pedomData.stepsToday|0;
+      if (pedomData.lastUpdate) lastUpdate = new Date(pedomData.lastUpdate);
+      stepsCounted = pedomData.stepsToday|0;
   }
   pedomdata = 0; //reset pedomdata to save memory
 

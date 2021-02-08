@@ -213,17 +213,22 @@
       }, interval*1000);
     }
   }
-  /*function calcSteps() {
-    stopTimeStep = new Date(); //stop time after each step
-    stepTimeDiff = stopTimeStep - startTimeStep; //time between steps in milliseconds
-    startTimeStep = new Date(); //start time again
+  function readPedomSteps(step){
+    const s = require('Storage');
+    const PEDOMFILE = "pedometer.steps.json";
+    console.log(step);
+    //Read data from file and set variables
+    let pedomData = s.readJSON(PEDOMFILE,1);
+    if (pedomData) {
+        currentSteps = pedomData.stepsToday|step;
+    }else{
+        currentSteps = step;}
 
-    //Remove step if time between first and second step is too long or too short
-    if ((stepTimeDiff >= cMaxTime) || (stepTimeDiff <= cMinTime))
-    { //milliseconds
-      currentSteps--;
-    }
-  }*/
+    if (!lastSentSteps)
+      lastSentSteps = currentSteps -1;
+
+    pedomdata = 0; //reset pedomdata to save memory
+  }
 
   var _GB = global.GB;
   global.GB = (event) => {
@@ -302,10 +307,7 @@
   sendBattery();
   // Activity monitor
   Bangle.on("step", s => {
-    if (!lastSentSteps)
-      lastSentSteps = s-1;
-    currentSteps = s;
-    //calcSteps();
+    readPedomSteps(s);
   });
   Bangle.on('HRM',function(hrm) {
     var ok = hrm.confidence>90;
