@@ -11,22 +11,23 @@
 
     scrollPos: 0
   };
+  const s = require('Storage');
+  const PEDOMFILE = "pedometer.steps.json";
   const cMaxTime = 1100;
   const cMinTime = 240;
   // activity reporting
-  var currentSteps = 0, lastSentSteps=0;
-  var activityInterval;
-  var hrmTimeout;
-
-  var stepTimeDiff = 9999; //Time difference between two steps
-  var startTimeStep = new Date(); //set start time
-  var stopTimeStep = 0; //Time after one step
+  let currentSteps = 0, lastSentSteps=0; lastConnectDate=0;
+  let activityInterval;
+  let hrmTimeout;
+  let callActive = false;
+  let pedomData = 0;
+  let isConnect = false;
 
   function settings() {
     let settings = require('Storage').readJSON("gbridge.json", true) || {};
-    if (!("showIcon" in settings)) {
-      settings.showIcon = true;
-    }
+    if (!("showIcon" in settings)) settings.showIcon = true;
+    if (!("lastSentSteps" in settings)) settings.lastSentSteps = 0;
+    if (!("lastConnectDate" in settings)) settings.lastConnectDate = "2020-02-02T00:0:00.000Z";
     return settings;
   }
 
@@ -100,23 +101,6 @@
               // note: using a.y rather than y
               g.setFontAlign(0, 1).setFont("6x8", bSize).drawString(state.musicInfo.album, x+w/2, a.y+h);
             }
-/*          } else {
-            // regular size:
-            // [icon] <artist>
-            // [    ] <title>
-            const size=40, iconSize = 24;
-            let x = a.x,
-              y = a.y+(a.h-size)/2; // center vertically in available area
-            g.setColor(-1);
-            g.drawImage(
-              require("heatshrink").decompress(atob("jEYwILI/EAv/8gP/ARcMgOAASN8h+A/kfwP8n4CD/E/gHgjg/HA=")),
-              x+8, y+8);
-            g.setFontAlign(-1, -1);
-            x += iconSize+16;
-            g.setFont("4x6", 2).drawString(state.musicInfo.artist, x, y+8);
-            g.setFont("6x8", 1).drawString(state.musicInfo.album, x, y+22);
-            g.setFont("6x8", 1).drawString(state.musicInfo.track, x, y+32);
-          }*/
         }}, options));
     }
 
@@ -136,15 +120,13 @@
   }
 
   function handleCallEvent(event) {
-    //console.log("Cmd: " + event.cmd);
-    //console.log("Name: " + event.name);
-    //console.log("Number " + event.number);
-
     if ((event.cmd === "") && ((event.name)||(event.number))){
       event.cmd = "incoming";}
-    else if ((event.cmd === "") && (!event.name) && (!event.number)){
+    else if ((event.cmd === "") && (!callActive) && (!event.name) && (!event.number)){
       event.cmd = "incoming";
       event.name = "VoIP App";}
+    else if ((event.cmd === "") && (callActive) && (!event.name) && (!event.number)){
+      event.cmd = "end";}
 
     switch (event.cmd) {
       case "incoming":
@@ -152,6 +134,7 @@
         size: 55, title: event.name, id: "call",
         body: event.number, icon:require("heatshrink").decompress(atob("jEYwIMJj4CCwACJh4CCCIMOAQMGAQMHAQMDAQMBCIMB4PwgHz/EAn4CBj4CBg4CBgACCAAw="))});
         Bangle.buzz(300);
+        callActive = true;
         break;
       case "accept":
       case "outgoing":
@@ -159,6 +142,7 @@
       case "start":
       case "end":
         require("notify").hide(event);
+        callActive = false;
         break;
     }
   }
@@ -176,7 +160,7 @@
   }
 
   function handleActivityEvent(event) {
-    var s = settings();
+    let s = settings();
     // handle setting activity interval
     if (s.activityInterval===undefined ||
         s.activityInterval<30)
@@ -212,22 +196,61 @@
         sendActivity(-1);
       }, interval*1000);
     }
+    s = 0;
   }
-  function readPedomSteps(step){
-    const s = require('Storage');
-    const PEDOMFILE = "pedometer.steps.json";
-    console.log(step);
-    //Read data from file and set variables
-    let pedomData = s.readJSON(PEDOMFILE,1);
-    if (pedomData) {
-        currentSteps = pedomData.stepsToday|step;
-    }else{
-        currentSteps = step;}
 
-    if (!lastSentSteps)
-      lastSentSteps = currentSteps -1;
+  function openPedomFile(step){
+    pedomData = s.readJSON(PEDOMFILE,1);
+    if (pedomData) currentSteps = pedomData.stepsToday|0;
+    pedomdata = 0; //reset pedomdata to save memory
+
+    pedomdata = settings();
+    if (pedomdata.lastConnectDate) lastConnectDate = new Date(pedomdata.lastConnectDate);
+    if (lastSentSteps === 0) lastSentSteps = pedomdata.lastSentSteps|0;
+    pedomdata = 0;
+  }
+
+  function savePedomFile(name, val){
+    pedomdata = settings();
+    pedomdata[name] = val;
+    require('Storage').writeJSON('gbridge.json', pedomdata);
 
     pedomdata = 0; //reset pedomdata to save memory
+  }
+
+  function readPedomSteps(step){
+    openPedomFile(step);
+    if (currentSteps === 0){
+      currentSteps = step;
+      if (lastSentSteps === 0)
+        lastSentSteps = currentSteps -1;
+    }
+    savePedomFile('lastSentSteps', lastSentSteps);
+  }
+
+  function onConnect() {
+    isConnect = true;
+    sendBattery();
+
+    // Um die Werte aus dem PEDOMFILE zu lesen
+    lastSentSteps = 0;
+    openPedomFile(0);
+
+    let date = new Date();
+    if (lastConnectDate.getDate() != date.getDate())
+    { //different day, set all steps to 0
+      lastSentSteps = 0;
+      savePedomFile('lastConnectDate', lastConnectDate.toISOString());
+      savePedomFile('lastSentSteps', lastSentSteps);
+    }
+    sendActivity(-1);
+  }
+
+  function onDisconnect(){
+    isConnect=false;
+    callActive = false;
+    savePedomFile('lastConnectDate', new Date().toISOString());
+    savePedomFile('lastSentSteps', lastSentSteps);
   }
 
   var _GB = global.GB;
@@ -296,15 +319,24 @@
 
   // Send a summary of activity to Gadgetbridge
   function sendActivity(hrm) {
+    if (!isConnect) return;
     var steps = currentSteps - lastSentSteps;
-    lastSentSteps = 0;
+    lastSentSteps = currentSteps;
     gbSend({ t: "act", stp: steps, hrm:hrm });
   }
 
+  // OnConnect setSteps to send
+  NRF.on("connect", () => setTimeout(onConnect, 10000));
   // Battery monitor
-  NRF.on("connect", () => setTimeout(sendBattery, 2000));
+  //NRF.on("connect", () => setTimeout(sendBattery, 2000));
   setInterval(sendBattery, 10*60*1000);
   sendBattery();
+
+  NRF.on("disconnect", () => onDisconnect());
+
+  // Show launcher when middle button pressed
+  setWatch(onConnect, BTN3, { repeat: true, edge: "falling" });
+
   // Activity monitor
   Bangle.on("step", s => {
     readPedomSteps(s);

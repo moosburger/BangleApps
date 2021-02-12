@@ -37,3 +37,8 @@ GB({"t":"call","cmd":"incoming","name":"name","number":"+491234"})
 
 //Time
 setTime(1612165843);E.setTimeZone(1.0);(s=>{s&&(s.timezone=1.0)&&require('Storage').write('setting.json',s);})(require('Storage').readJSON('setting.json',1))
+
+//Activity
+GB({"t":"act","hrm":"true","stp":"true", "int":"30"})
+GB({"t":"act","int":"30"})
+GB({"t":"act","hrm":"true","stp":"true", "int":"30"})

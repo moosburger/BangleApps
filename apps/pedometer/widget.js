@@ -91,6 +91,17 @@
     settings = 0; //reset settings to save memory
   }
 
+  function onConnect() {
+    //Check if same day
+    let date = new Date();
+    if (lastUpdate.getDate() != date.getDate())
+    { //different day, set all steps to 0
+      stepsCounted = 0;
+    }
+    lastUpdate = date;
+    saveSteps();
+  }
+
   function draw() {
     var height = 23; //width is defined globaly
 
@@ -129,6 +140,8 @@
   E.on('kill', () => {
       saveSteps();
   });
+
+  NRF.on("connect", () => setTimeout(onConnect, 1000));
 
   //When Step is registered by firmware
   Bangle.on('step', (up) => {
