@@ -14,9 +14,11 @@ GB({"t":"notify","id":1592721719,"src":"WhatsApp","title":"Sample Group (3 messa
 
 // Telegram
 GB({"t":"notify","id":1575479849,"src":"Telegram FOSS","title":"Prexl, Gerhard","body":"message contents"})
+GB({"t":"notify","id":1612854744,"subject":"Subject","body":"body","sender":"sender","tel":"tel"})
 
 // Alarm clock + dismissal
 GB({"t":"notify","id":1592721714,"src":"ALARMCLOCKRECEIVER"})
+GB({"t":"notify","id":1592721714})
 GB({"t":"notify-","id":1592721714})
 
 // Set Alarm

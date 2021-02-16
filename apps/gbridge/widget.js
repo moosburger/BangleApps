@@ -52,6 +52,8 @@
   }
   function handleNotificationEvent(event) {
     if (event.t === "notify") {
+      if ((!event.src) && (event.sender)) event.src = event.sender;
+      if (!event.src) event.src = "";
       require("notify").show(prettifyNotificationEvent(event));
       Bangle.buzz(200);
     } else { // notify-
@@ -251,6 +253,7 @@
     callActive = false;
     savePedomFile('lastConnectDate', new Date().toISOString());
     savePedomFile('lastSentSteps', lastSentSteps);
+    Bangle.buzz(300);
   }
 
   var _GB = global.GB;
@@ -334,8 +337,8 @@
 
   NRF.on("disconnect", () => onDisconnect());
 
-  // Show launcher when middle button pressed
-  setWatch(onConnect, BTN3, { repeat: true, edge: "falling" });
+  // DEBUG
+  //setWatch(onConnect, BTN3, { repeat: true, edge: "falling" });
 
   // Activity monitor
   Bangle.on("step", s => {

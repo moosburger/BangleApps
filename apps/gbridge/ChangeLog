@@ -18,4 +18,5 @@
       Nicer display of alarm clock notifications
 0.17: Modified music notification for updated 'notify' library
 0.18: Added reporting of step count and HRM (new Gadgetbridges can now log this)
-0.21: Mofified Call and Music notification
+0.21: Modified Call and Music notification
+0.25: Anpassungen und Fixes für Call, Notify, Musik
