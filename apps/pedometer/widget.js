@@ -51,7 +51,7 @@
   function resetActive() {
     active = 0;
     steps = 0;
-    if (Bangle.isLCDOn()) WIDGETS.pedometer.draw();
+    if (Bangle.isLCDOn()) WIDGETS["pedometer"].draw();
   }
 
   function saveSteps(){
@@ -147,12 +147,12 @@
   Bangle.on('step', (up) => {
     steps++; //increase step count
     calcSteps();
-    if (Bangle.isLCDOn()) WIDGETS.pedometer.draw();
+    if (Bangle.isLCDOn()) WIDGETS["pedometer"].draw();
   });
 
   // redraw when the LCD turns on
   Bangle.on('lcdPower', function(on) {
-    if (on) WIDGETS.pedometer.draw();
+    if (on) WIDGETS["pedometer"].draw();
   });
 
   //Read data from file and set variables

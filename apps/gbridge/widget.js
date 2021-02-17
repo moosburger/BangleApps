@@ -53,7 +53,7 @@
   function handleNotificationEvent(event) {
     if (event.t === "notify") {
       if ((!event.src) && (event.sender)) event.src = event.sender;
-      if (!event.src) event.src = "";
+      if (!event.src) event.src = "unknown";
       require("notify").show(prettifyNotificationEvent(event));
       Bangle.buzz(200);
     } else { // notify-
@@ -298,7 +298,7 @@
   }
 
   function changedConnectionState() {
-    WIDGETS.gbridgew.draw();
+    WIDGETS["gbridgew"].draw();
     g.flip(); // turns screen on
   }
 
@@ -306,13 +306,13 @@
     NRF.removeListener("connect", changedConnectionState);
     NRF.removeListener("disconnect", changedConnectionState);
     if (settings().showIcon) {
-      WIDGETS.gbridgew.width = 24;
-      WIDGETS.gbridgew.draw = draw;
+      WIDGETS["gbridgew"].width = 24;
+      WIDGETS["gbridgew"].draw = draw;
       NRF.on("connect", changedConnectionState);
       NRF.on("disconnect", changedConnectionState);
     } else {
-      WIDGETS.gbridgew.width = 0;
-      WIDGETS.gbridgew.draw = ()=>{};
+      WIDGETS["gbridgew"].width = 0;
+      WIDGETS["gbridgew"].draw = ()=>{};
     }
   }
 
@@ -356,6 +356,6 @@
   handleActivityEvent({}); // kicks off activity reporting
 
   // Finally add widget
-  WIDGETS.gbridgew = {area: "tl", width: 24, draw: draw, reload: reload};
+  WIDGETS["gbridgew"] = {area: "tl", width: 24, draw: draw, reload: reload};
   reload();
 })();
