@@ -11,7 +11,6 @@
 
     scrollPos: 0
   };
-  const s = require('Storage');
   const PEDOMFILE = "pedometer.steps.json";
   const cMaxTime = 1100;
   const cMinTime = 240;
@@ -162,24 +161,24 @@
   }
 
   function handleActivityEvent(event) {
-    let s = settings();
+    let sett = settings();
     // handle setting activity interval
-    if (s.activityInterval===undefined ||
-        s.activityInterval<30)
-      s.activityInterval = 3*60; // 3 minutes default
+    if (sett.activityInterval===undefined ||
+        sett.activityInterval<30)
+      sett.activityInterval = 3*60; // 3 minutes default
     if (event.int) {
       if (event.int<30) event.int = 30; // min 30 secs
-      s.activityInterval = event.int;
+      sett.activityInterval = event.int;
       require('Storage').writeJSON("gbridge.json", s);
     }
     // set up interval/HRM to handle activity data
-    var interval = s.activityInterval;
+    var interval = s.ettactivityInterval;
     var realtime = event.hrm || event.stp;
     if (activityInterval)
       clearInterval(activityInterval);
     activityInterval = undefined;
-    if (s.hrm) Bangle.setHRMPower(1);
-    if (s.hrm) {
+    if (sett.hrm) Bangle.setHRMPower(1);
+    if (sett.hrm) {
       if (realtime) {
         // if realtime reporting, leave HRM on and use that to trigger events
         hrmTimeout = undefined;
@@ -198,11 +197,11 @@
         sendActivity(-1);
       }, interval*1000);
     }
-    s = 0;
+    sett = 0;
   }
 
   function openPedomFile(step){
-    pedomData = s.readJSON(PEDOMFILE,1);
+    pedomData = require('Storage').readJSON(PEDOMFILE,1);
     if (pedomData) currentSteps = pedomData.stepsToday|0;
     pedomdata = 0; //reset pedomdata to save memory
 

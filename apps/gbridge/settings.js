@@ -8,7 +8,7 @@
       settings.showIcon = true;
     }
     if (!("hrm" in settings)) {
-      settings.hrm = true;
+      settings.hrm = false;
     }
     return settings;
   }
@@ -47,4 +47,4 @@
     "< Back" : function() { E.showMenu(mainmenu); },
   };
   E.showMenu(mainmenu);
-});
+})
